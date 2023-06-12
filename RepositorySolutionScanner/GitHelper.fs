@@ -6,63 +6,52 @@ open ExecuteHelper
 
 
 module GitHelper =
-    type ProcessResult = { 
-        ExitCode : int; 
-        StdOut : string; 
-        StdErr : string 
-    }
-
-    //let executeProcess (workingDir: string) (processName: string) (processArgs: string) =
-    //    let psi = new Diagnostics.ProcessStartInfo(processName, processArgs) 
-    //    psi.UseShellExecute <- false
-    //    psi.RedirectStandardOutput <- true
-    //    psi.RedirectStandardError <- true
-    //    psi.CreateNoWindow <- true        
-    //    psi.WorkingDirectory <- workingDir
-    //    let proc = Diagnostics.Process.Start(psi) 
-    //    let output = new Text.StringBuilder()
-    //    let error = new Text.StringBuilder()
-    //    proc.OutputDataReceived.Add(fun args -> output.Append(args.Data) |> ignore)
-    //    proc.ErrorDataReceived.Add(fun args -> error.Append(args.Data) |> ignore)
-    //    proc.BeginErrorReadLine()
-    //    proc.BeginOutputReadLine()
-    //    proc.WaitForExit()
-    //    { 
-    //        ExitCode = proc.ExitCode
-    //        StdOut = output.ToString()
-    //        StdErr = error.ToString() 
-    //    }
 
     let GetTopLevelDirectory (directoryPath: string) = 
         let out = new Text.StringBuilder()
         let _ = executeProcess directoryPath "git" "rev-parse --show-toplevel" (Some out)
         out.ToString()
 
-    let ShowAllBranch (directoryPath: string) =
-        let out = new Text.StringBuilder()
-        let _ = executeProcess (GetTopLevelDirectory directoryPath) "git" "branch" (Some out)
-        out.ToString()
-
     type GitDirectory = 
         | Repository of repositoryPath: string * originUri: string * parentBranch: string option * branch: string
-        | Worktree of repositoryPath: string * worktreePath: string * parentBranch: string * branch: string
+        | Worktree of repositoryPath: string * worktreePath: string * parentBranch: string option * branch: string
         | NotAGitRespository
     with
-        member x.Fetch() = 
-            ()
-        member x.FastMerge() = 
+        member x.ListBranch () =
             match x with
-            | Repository _
-            | Worktree _ -> ()
+            | Repository (repositoryPath, _,_,_)
+            | Worktree (repositoryPath, _,_,_) ->
+                let out = new Text.StringBuilder()
+                executeProcess repositoryPath "git" "branch -r" (Some out) |> ignore
+                out.ToString()
+            | _ -> failwithf "Unable to fetch directory because isn't a git directory" 
+        member x.Fetch() = 
+            match x with
+            | Repository (repositoryPath, _,_,_)
+            | Worktree (repositoryPath, _,_,_) ->
+                let out = new Text.StringBuilder()
+                executeProcess repositoryPath "git" "fetch --all" (Some out) |> ignore
+                out.ToString()
+            | _ -> failwithf "Unable to fetch directory because isn't a git directory" 
+        member x.FastForwardMerge() =
+            let doFFMerge (repositoryPath: string) (parentBranch: string) =
+                let out = new Text.StringBuilder()
+                executeProcess repositoryPath "git" (sprintf "merge --ff-only %s" parentBranch) (Some out) |> ignore
+                out.ToString()
+            match x with
+            | Repository (gitPath,_,parentBranch,_)
+            | Worktree (_,gitPath,parentBranch,_) when parentBranch.IsSome -> doFFMerge gitPath parentBranch.Value
             | _ -> failwithf "Unable to fast merge directory because isn't a git directory" 
         member x.Delete () = 
             match x with
             | Repository (repositoryPath, _, _, _) -> 
                 let out = new Text.StringBuilder()
                 executeProcess (Path.GetDirectoryName(repositoryPath)) "rm" (sprintf "-rf %s" repositoryPath) (Some out) |> ignore
+                out.ToString()
             | Worktree (repositoryPath, worktreePath, _, _) -> 
                 let out = new Text.StringBuilder()
                 executeProcess repositoryPath "git" (sprintf "worktree remove %s" worktreePath) (Some out) |> ignore
+                out.ToString()
             | _ -> 
                 failwithf "Unable to delete directory because isn't a git directory" 
         static member CreateWorktree (parentRepository: string) (branchSource: string) (worktreeName: string) = 
@@ -72,7 +61,9 @@ module GitHelper =
             let result = executeProcess parentRepository "git" (sprintf "add -b %s %s %s" branchName worktreeDestination branchSource) (Some out) |> ignore
             if result.Equals 0 then
                 executeProcess parentRepository "git" (sprintf "config --global --add safe.directory %s" worktreeDestination) (Some out) |> ignore
-                Some (Worktree (parentRepository, worktreeDestination, branchSource, branchName))
+                use fileStream = System.IO.File.Create(Path.Combine(worktreeDestination, ".vs", "parentBranch.cfg"))
+                fileStream.Write(System.Text.UTF8Encoding(true).GetBytes(branchSource))
+                Some (Worktree (parentRepository, worktreeDestination, Some(branchSource), branchName))
             else
                 None
         static member GetRepositoryType (directoryPath: string) =
@@ -88,10 +79,16 @@ module GitHelper =
                     let _ = executeProcess pathResult "git" "branch --show-current" (Some outBranch)
                     Repository (pathResult, out.ToString(), None, outBranch.ToString())
                 elif File.Exists (path) then
-                    let resultBranch = executeProcess pathResult "git" "branch --show-current" (Some out)
+                    let _ = executeProcess pathResult "git" "branch --show-current" (Some out)
+                    let parentFilePath = Path.Combine(pathResult, ".vs", "parentBranch.cfg")
                     use fileStream = new StreamReader (path)
                     let gitdir = fileStream.ReadLine().Replace("gitdir: ", "")
                     let repoPath = gitdir.Split(".git")[0]
-                    Worktree (repoPath, pathResult, "", out.ToString())
+                    let parent = 
+                        if File.Exists(parentFilePath) then
+                            Some (File.OpenText(parentFilePath).ReadToEnd())
+                        else
+                            None
+                    Worktree (repoPath, pathResult, parent, out.ToString())
                 else
                     NotAGitRespository
