@@ -1,0 +1,43 @@
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\CLI RepoSolutionHelper.exe
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\CLI RepoSolutionHelper.deps.json
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\CLI RepoSolutionHelper.runtimeconfig.json
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\CLI RepoSolutionHelper.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\CLI RepoSolutionHelper.pdb
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.csproj.AssemblyReference.cache
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.GeneratedMSBuildEditorConfig.editorconfig
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.AssemblyInfoInputs.cache
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.AssemblyInfo.cs
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.csproj.CoreCompileInputs.cache
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\refint\CLI RepoSolutionHelper.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.pdb
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.genruntimeconfig.cache
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\ref\CLI RepoSolutionHelper.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Core.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.Csv.Core.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.Html.Core.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.Http.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.Json.Core.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.Runtime.Utilities.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.WorldBank.Core.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\FSharp.Data.Xml.Core.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\cs\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\de\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\es\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\fr\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\it\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\ja\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\ko\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\pl\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\pt-BR\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\ru\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\tr\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\zh-Hans\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\zh-Hant\FSharp.Core.resources.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\RepositorySolutionScanner.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\RepositorySolutionScanner.pdb
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\RepositorySolutionScanner.xml
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\obj\Debug\net7.0\CLI RepoSolutionHelper.csproj.CopyComplete
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\git\RepoSolutionHelper\CLI RepoSolutionHelper\bin\Debug\net7.0\CustomAction.json

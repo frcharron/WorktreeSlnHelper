@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<Compile Include="ExecuteHelper.fs" />
+	<Compile Include="Action.fs" />
+	<Compile Include="GitHelper.fs" />
+	<Compile Include="SolutionsInstance.fs" />
+    <Compile Include="Scanner.fs" />
+	<Compile Include="RepositoryInstance.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Data" Version="6.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+</Project>

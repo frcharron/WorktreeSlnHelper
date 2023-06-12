@@ -1,0 +1,136 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\git\\RepoSolutionHelper\\CLI RepoSolutionHelper\\CLI RepoSolutionHelper.csproj": {}
+  },
+  "projects": {
+    "C:\\git\\RepoSolutionHelper\\CLI RepoSolutionHelper\\CLI RepoSolutionHelper.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\git\\RepoSolutionHelper\\CLI RepoSolutionHelper\\CLI RepoSolutionHelper.csproj",
+        "projectName": "CLI RepoSolutionHelper",
+        "projectPath": "C:\\git\\RepoSolutionHelper\\CLI RepoSolutionHelper\\CLI RepoSolutionHelper.csproj",
+        "packagesPath": "C:\\Users\\frcharron\\.nuget\\packages\\",
+        "outputPath": "C:\\git\\RepoSolutionHelper\\CLI RepoSolutionHelper\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\frcharron\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {
+              "C:\\git\\RepoSolutionHelper\\RepositorySolutionScanner\\RepositorySolutionScanner.fsproj": {
+                "projectPath": "C:\\git\\RepoSolutionHelper\\RepositorySolutionScanner\\RepositorySolutionScanner.fsproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\git\\RepoSolutionHelper\\RepositorySolutionScanner\\RepositorySolutionScanner.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\git\\RepoSolutionHelper\\RepositorySolutionScanner\\RepositorySolutionScanner.fsproj",
+        "projectName": "RepositorySolutionScanner",
+        "projectPath": "C:\\git\\RepoSolutionHelper\\RepositorySolutionScanner\\RepositorySolutionScanner.fsproj",
+        "packagesPath": "C:\\Users\\frcharron\\.nuget\\packages\\",
+        "outputPath": "C:\\git\\RepoSolutionHelper\\RepositorySolutionScanner\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\frcharron\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.203\\FSharp\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "FSharp.Core": {
+              "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[7.0.200, )",
+              "generatePathProperty": true
+            },
+            "FSharp.Data": {
+              "target": "Package",
+              "version": "[6.2.0, )",
+              "generatePathProperty": true
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
