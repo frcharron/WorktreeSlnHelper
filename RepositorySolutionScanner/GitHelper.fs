@@ -5,7 +5,11 @@ open System.IO
 open ExecuteHelper
 
 
+
 module GitHelper =
+
+    let [<Literal>] VS_DIRECTORY_PATH = ".vs"
+    let [<Literal>] PARENT_BRANCH_PATH = "parentBranch.cfg"
 
     let GetTopLevelDirectory (directoryPath: string) = 
         let out = new Text.StringBuilder()
@@ -48,9 +52,10 @@ module GitHelper =
                 let out = new Text.StringBuilder()
                 executeProcess (Path.GetDirectoryName(repositoryPath)) "rm" (sprintf "-rf %s" repositoryPath) (Some out) |> ignore
                 out.ToString()
-            | Worktree (repositoryPath, worktreePath, _, _) -> 
+            | Worktree (repositoryPath, worktreePath, _, branch) -> 
                 let out = new Text.StringBuilder()
                 executeProcess repositoryPath "git" (sprintf "worktree remove %s" worktreePath) (Some out) |> ignore
+                executeProcess repositoryPath "git" (sprintf "branch -d %s" branch) (Some out) |> ignore
                 out.ToString()
             | _ -> 
                 failwithf "Unable to delete directory because isn't a git directory" 
@@ -58,11 +63,16 @@ module GitHelper =
             let out = new Text.StringBuilder()
             let worktreeDestination = Path.Combine(Path.GetDirectoryName(parentRepository), sprintf "WT_%s" worktreeName)
             let branchName = sprintf "%s%s" branchPrefix worktreeName
-            let result = executeProcess parentRepository "git" (sprintf "add -b %s %s %s" branchName worktreeDestination branchSource) (Some out) |> ignore
+            let result = executeProcess parentRepository "git" (sprintf "worktree add -b %s %s %s" branchName worktreeDestination branchSource) (Some out)
+            Console.WriteLine(out.ToString());
             if result.Equals 0 then
                 executeProcess parentRepository "git" (sprintf "config --global --add safe.directory %s" worktreeDestination) (Some out) |> ignore
-                use fileStream = System.IO.File.Create(Path.Combine(worktreeDestination, ".vs", "parentBranch.cfg"))
-                fileStream.Write(System.Text.UTF8Encoding(true).GetBytes(branchSource))
+                let configPath = Path.Combine(worktreeDestination, VS_DIRECTORY_PATH)
+                let configFile = Path.Combine(configPath, PARENT_BRANCH_PATH)
+                System.IO.Directory.CreateDirectory(configPath) |> ignore
+                //use fileStream = System.IO.File.Create(configFile)
+                use fileStream = new StreamWriter(configFile)
+                fileStream.Write(branchSource)
                 Some (Worktree (parentRepository, worktreeDestination, Some(branchSource), branchName))
             else
                 None
@@ -80,7 +90,7 @@ module GitHelper =
                     Repository (pathResult, out.ToString(), None, outBranch.ToString())
                 elif File.Exists (path) then
                     let _ = executeProcess pathResult "git" "branch --show-current" (Some out)
-                    let parentFilePath = Path.Combine(pathResult, ".vs", "parentBranch.cfg")
+                    let parentFilePath = Path.Combine(pathResult, VS_DIRECTORY_PATH, PARENT_BRANCH_PATH)
                     use fileStream = new StreamReader (path)
                     let gitdir = fileStream.ReadLine().Replace("gitdir: ", "")
                     let repoPath = gitdir.Split(".git")[0]

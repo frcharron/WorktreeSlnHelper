@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using RepositorySolutionScanner;
+using static RepositorySolutionScanner.GitHelper.GitDirectory;
 
 class TestClass
 {
@@ -39,6 +40,16 @@ class TestClass
             {
                 Console.WriteLine(repository.RepositoryName);
                 Console.WriteLine(repository.Solutions.Length);
+                if (repository.RepositoryName.Contains("Genetec.Softwire_master") && repository.GitAttributs.IsRepository)
+                {
+                    var parent = repository.RepositoryPath;
+                    if (parent != null) {
+                        var wt = CreateWorktree("user/frcharron/", parent, "master", "Tests");
+                        Console.WriteLine(wt.ToString());
+                        wt.Value.Delete();
+                    }
+                    
+                }
             }
             Console.WriteLine(repositories[3].GitAttributs.ListBranch());
             Console.WriteLine(repositories[3].GitAttributs.Fetch());

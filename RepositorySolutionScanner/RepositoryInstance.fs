@@ -11,6 +11,11 @@ module RepositoryInstance =
         GitAttributs: GitHelper.GitDirectory
     }
     with 
+        member x.RepositoryPath = 
+            match x.GitAttributs with
+            | GitHelper.GitDirectory.Repository (path, _, _, _)
+            | GitHelper.GitDirectory.Worktree (path, _, _, _) -> path
+            | GitHelper.GitDirectory.NotAGitRespository -> ""
         static member ScanRepositories(containRepoPath: string) (customAction: CustonSolutionAction) = 
             Directory.GetDirectories(containRepoPath, "*", SearchOption.TopDirectoryOnly)
             |> Array.map (fun directory ->
