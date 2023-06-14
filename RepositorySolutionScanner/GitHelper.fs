@@ -54,10 +54,10 @@ module GitHelper =
                 out.ToString()
             | _ -> 
                 failwithf "Unable to delete directory because isn't a git directory" 
-        static member CreateWorktree (parentRepository: string) (branchSource: string) (worktreeName: string) = 
+        static member CreateWorktree (branchPrefix: string) (parentRepository: string) (branchSource: string) (worktreeName: string) = 
             let out = new Text.StringBuilder()
             let worktreeDestination = Path.Combine(Path.GetDirectoryName(parentRepository), sprintf "WT_%s" worktreeName)
-            let branchName = sprintf "user/frcharron/%s" worktreeName
+            let branchName = sprintf "%s%s" branchPrefix worktreeName
             let result = executeProcess parentRepository "git" (sprintf "add -b %s %s %s" branchName worktreeDestination branchSource) (Some out) |> ignore
             if result.Equals 0 then
                 executeProcess parentRepository "git" (sprintf "config --global --add safe.directory %s" worktreeDestination) (Some out) |> ignore
