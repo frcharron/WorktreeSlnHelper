@@ -44,16 +44,15 @@ class TestClass
                 {
                     var parent = repository.RepositoryPath;
                     if (parent != null) {
-                        var wt = CreateWorktree("user/frcharron/", parent, "master", "Tests");
-                        Console.WriteLine(wt.ToString());
+                        var wt = CreateWorktree("user/frcharron/", parent, "origin/master", "Tests");
+                        Console.WriteLine(wt.Value.Fetch());
+                        Console.WriteLine(wt.Value.FastForwardMerge());
+                        Console.WriteLine(wt.Value.ListBranch());
                         wt.Value.Delete();
                     }
                     
                 }
             }
-            Console.WriteLine(repositories[3].GitAttributs.ListBranch());
-            Console.WriteLine(repositories[3].GitAttributs.Fetch());
-            Console.WriteLine(repositories[3].GitAttributs.FastForwardMerge());
         }
     }
 }
