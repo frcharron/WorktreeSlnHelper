@@ -27,7 +27,12 @@ namespace SolutionsToolbar
     internal sealed partial class PackageIds
     {
         public const int MyMenuGroup = 0x1020;
-        public const int SolutionsToolBarCommandId = 0x0100;
+        public const int SolutionsToolBarComboId = 0x0100;
+        public const int FrameworkToolBarComboId = 0x0101;
+        public const int RunToolBarCommandId = 0x0102;
+        public const int BuildToolBarCommandId = 0x0103;
+        public const int RebuildToolBarCommandId = 0x0104;
+        public const int PublishToolBarCommandId = 0x0105;
         public const int Toolbar = 0x1000;
         public const int ToolbarGroup = 0x1050;
         public const int bmpPic1 = 0x0001;

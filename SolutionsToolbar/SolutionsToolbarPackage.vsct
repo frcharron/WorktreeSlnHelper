@@ -67,14 +67,57 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidSolutionsToolbarPackageCmdSet" id="SolutionsToolBarCommandId" priority="0x0100" type="Button">
+      <Button guid="guidSolutionsToolbarPackageCmdSet" id="RunToolBarCommandId" priority="0x0102" type="Button">
         <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
           <ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
         </Strings>
       </Button>
-    </Buttons>
+        <Button guid="guidSolutionsToolbarPackageCmdSet" id="BuildToolBarCommandId" priority="0x0103" type="Button">
+	        <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
+	        <Icon guid="guidImages" id="bmpPic2" />
+	        <Strings>
+		        <ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
+	        </Strings>
+        </Button>
+		<Button guid="guidSolutionsToolbarPackageCmdSet" id="RebuildToolBarCommandId" priority="0x0104" type="Button">
+			<Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
+			<Icon guid="guidImages" id="bmpPic2" />
+			<Strings>
+				<ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
+			</Strings>
+		</Button>
+		<Button guid="guidSolutionsToolbarPackageCmdSet" id="PublishToolBarCommandId" priority="0x0105" type="Button">
+			<Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
+			<Icon guid="guidImages" id="bmpPic2" />
+			<Strings>
+				<ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
+			</Strings>
+		</Button>
+
+	</Buttons>
+
+	  <Combos>
+		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="SolutionsToolBarComboId" priority="0x0100" type="DropDownCombo" defaultWidth="130" idCommandList="0">
+			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup"/>
+			  <CommandFlag>IconAndText</CommandFlag>
+			  <CommandFlag>CommandWellOnly</CommandFlag>
+			  <Strings>
+				  <ButtonText>Solution:</ButtonText>
+				  <CommandName>Dev</CommandName>
+			  </Strings>
+		  </Combo>
+		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="FrameworkToolBarComboId" priority="0x0101" type="DropDownCombo" defaultWidth="100" idCommandList="0">
+			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup"/>
+			  <CommandFlag>IconAndText</CommandFlag>
+			  <CommandFlag>CommandWellOnly</CommandFlag>
+			  <Strings>
+				  <ButtonText>Framework:</ButtonText>
+				  <CommandName>Dev</CommandName>
+			  </Strings>
+		  </Combo>
+	  </Combos>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
     <Bitmaps>
@@ -94,7 +137,12 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidSolutionsToolbarPackageCmdSet" value="{7c5421ef-54d3-4f13-b043-5bd988794dfc}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="SolutionsToolBarCommandId" value="0x0100" />
+	  <IDSymbol name="SolutionsToolBarComboId" value="0x0100" />
+      <IDSymbol name="FrameworkToolBarComboId" value="0x0101" />
+	  <IDSymbol name="RunToolBarCommandId" value="0x0102" />
+	  <IDSymbol name="BuildToolBarCommandId" value="0x0103" />
+	  <IDSymbol name="RebuildToolBarCommandId" value="0x0104" />
+	  <IDSymbol name="PublishToolBarCommandId" value="0x0105" />
       <IDSymbol name="Toolbar" value="0x1000" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
     </GuidSymbol>
