@@ -97,7 +97,7 @@
     </Buttons>
 
 	  <Combos>
-		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="SolutionsToolBarComboId" priority="0x0100" type="DropDownCombo" defaultWidth="130" idCommandList="SolutionCommandList">
+		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="cmdidSolutionFileSelectCommand" priority="0x0100" type="DropDownCombo" defaultWidth="130" idCommandList="cmdidSolutionFileListCommand">
 			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
@@ -128,6 +128,8 @@
       <Bitmap guid="guidImages3" href="Resources\BuildSolutionCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages4" href="Resources\RebuildSolutionCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages5" href="Resources\PublishSolutionCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages" href="Resources\SolutionFileSelectCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages6" href="Resources\SolutionFileListCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
 
@@ -138,17 +140,17 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidSolutionsToolbarPackageCmdSet" value="{7c5421ef-54d3-4f13-b043-5bd988794dfc}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
-	  <IDSymbol name="SolutionsToolBarComboId" value="0x0100" />
       <IDSymbol name="FrameworkToolBarComboId" value="0x0100" />
       <IDSymbol name="Toolbar" value="0x1000" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
-	  <IDSymbol name="SolutionCommandList" value="0x0110" />
 	  <IDSymbol name="FrameworkCommandList" value="0x0111" />
       <IDSymbol value="4177" name="cmdidCommand1" />
       <IDSymbol value="4178" name="cmdidRunSolutionCommand" />
       <IDSymbol value="4179" name="cmdidBuildSolutionCommand" />
       <IDSymbol value="4180" name="cmdidRebuildSolutionCommand" />
       <IDSymbol value="4181" name="cmdidPublishSolutionCommand" />
+      <IDSymbol value="4182" name="cmdidSolutionFileSelectCommand" />
+      <IDSymbol value="4183" name="cmdidSolutionFileListCommand" />
     </GuidSymbol>
   
     <GuidSymbol value="{e7c6b847-6227-4a4e-9aeb-b25f9a0312ee}" name="guidImages1">
@@ -188,6 +190,24 @@
     </GuidSymbol>
   
     <GuidSymbol value="{4b179669-6c49-4ef5-9df0-cc2421977263}" name="guidImages5">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{d6474e30-29b5-4a5f-a66b-701f1cc0dd81}" name="guidImages">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{52edc332-c4e8-42d0-a4e3-27fb3e6b0bf4}" name="guidImages6">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />

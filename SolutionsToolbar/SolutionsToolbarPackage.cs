@@ -45,15 +45,6 @@ namespace SolutionsToolbar
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            //https://github.com/microsoft/VSSDK-Extensibility-Samples/blob/master/Combo_Box/C%23/VsPkg.cs
-            CommandID menuMyDropDownComboCommandID = new CommandID(PackageGuids.guidSolutionsToolbarPackageCmdSet, (int)PackageIds.SolutionsToolBarComboId);
-            //OleMenuCommand menuMyDropDownComboCommand = new OleMenuCommand(new EventHandler(OnMenuMyDropDownCombo), menuMyDropDownComboCommandID);
-            //mcs.AddCommand(menuMyDropDownComboCommand);
-
-            CommandID menuMyDropDownComboGetListCommandID = new CommandID(PackageGuids.guidSolutionsToolbarPackageCmdSet, (int)PackageIds.SolutionCommandList);
-            //MenuCommand menuMyDropDownComboGetListCommand = new OleMenuCommand(new EventHandler(OnMenuMyDropDownComboGetList), menuMyDropDownComboGetListCommandID);
-            //mcs.AddCommand(menuMyDropDownComboGetListCommand);
-
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
@@ -61,6 +52,8 @@ namespace SolutionsToolbar
             await BuildSolutionCommand.InitializeAsync(this);
             await RebuildSolutionCommand.InitializeAsync(this);
             await PublishSolutionCommand.InitializeAsync(this);
+            await SolutionFileSelectCommand.InitializeAsync(this);
+            await SolutionFileListCommand.InitializeAsync(this);
         }
 
         #endregion
