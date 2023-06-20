@@ -18,8 +18,20 @@ namespace SolutionsToolbar
         public const string guidSolutionsToolbarPackageCmdSetString = "7c5421ef-54d3-4f13-b043-5bd988794dfc";
         public static Guid guidSolutionsToolbarPackageCmdSet = new Guid(guidSolutionsToolbarPackageCmdSetString);
 
-        public const string guidImagesString = "14c3d29b-d40a-407d-aed6-ea0e862d0c83";
-        public static Guid guidImages = new Guid(guidImagesString);
+        public const string guidImages1String = "e7c6b847-6227-4a4e-9aeb-b25f9a0312ee";
+        public static Guid guidImages1 = new Guid(guidImages1String);
+
+        public const string guidImages2String = "48b3adf4-62e9-4c75-ae2f-3002c82c48d9";
+        public static Guid guidImages2 = new Guid(guidImages2String);
+
+        public const string guidImages3String = "12e3c3aa-058c-40c6-bbe2-53f879ff9137";
+        public static Guid guidImages3 = new Guid(guidImages3String);
+
+        public const string guidImages4String = "0b0eaaaa-4baa-4c84-802d-af4e86aa0699";
+        public static Guid guidImages4 = new Guid(guidImages4String);
+
+        public const string guidImages5String = "4b179669-6c49-4ef5-9df0-cc2421977263";
+        public static Guid guidImages5 = new Guid(guidImages5String);
     }
     /// <summary>
     /// Helper class that encapsulates all CommandIDs uses across VS Package.
@@ -28,13 +40,40 @@ namespace SolutionsToolbar
     {
         public const int MyMenuGroup = 0x1020;
         public const int SolutionsToolBarComboId = 0x0100;
-        public const int FrameworkToolBarComboId = 0x0101;
-        public const int RunToolBarCommandId = 0x0102;
-        public const int BuildToolBarCommandId = 0x0103;
-        public const int RebuildToolBarCommandId = 0x0104;
-        public const int PublishToolBarCommandId = 0x0105;
+        public const int FrameworkToolBarComboId = 0x0100;
         public const int Toolbar = 0x1000;
         public const int ToolbarGroup = 0x1050;
+        public const int SolutionCommandList = 0x0110;
+        public const int FrameworkCommandList = 0x0111;
+        public const int cmdidCommand1 = 0x1051;
+        public const int cmdidRunSolutionCommand = 0x1052;
+        public const int cmdidBuildSolutionCommand = 0x1053;
+        public const int cmdidRebuildSolutionCommand = 0x1054;
+        public const int cmdidPublishSolutionCommand = 0x1055;
+        public const int bmpPic1 = 0x0001;
+        public const int bmpPic2 = 0x0002;
+        public const int bmpPicSearch = 0x0003;
+        public const int bmpPicX = 0x0004;
+        public const int bmpPicArrows = 0x0005;
+        public const int bmpPicStrikethrough = 0x0006;
+        public const int bmpPic1 = 0x0001;
+        public const int bmpPic2 = 0x0002;
+        public const int bmpPicSearch = 0x0003;
+        public const int bmpPicX = 0x0004;
+        public const int bmpPicArrows = 0x0005;
+        public const int bmpPicStrikethrough = 0x0006;
+        public const int bmpPic1 = 0x0001;
+        public const int bmpPic2 = 0x0002;
+        public const int bmpPicSearch = 0x0003;
+        public const int bmpPicX = 0x0004;
+        public const int bmpPicArrows = 0x0005;
+        public const int bmpPicStrikethrough = 0x0006;
+        public const int bmpPic1 = 0x0001;
+        public const int bmpPic2 = 0x0002;
+        public const int bmpPicSearch = 0x0003;
+        public const int bmpPicX = 0x0004;
+        public const int bmpPicArrows = 0x0005;
+        public const int bmpPicStrikethrough = 0x0006;
         public const int bmpPic1 = 0x0001;
         public const int bmpPic2 = 0x0002;
         public const int bmpPicSearch = 0x0003;

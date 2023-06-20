@@ -45,8 +45,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BuildSolutionCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SolutionsToolBarCommand.cs" />
+    <Compile Include="PublishSolutionCommand.cs" />
+    <Compile Include="RebuildSolutionCommand.cs" />
+    <Compile Include="RunSolutionCommand.cs" />
     <Compile Include="SolutionsToolbarPackage.cs" />
     <Compile Include="SolutionsToolbarPackage1.cs">
       <AutoGen>True</AutoGen>
@@ -80,7 +83,10 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\SolutionsToolBarCommand.png" />
+    <Content Include="Resources\BuildSolutionCommand.png" />
+    <Content Include="Resources\PublishSolutionCommand.png" />
+    <Content Include="Resources\RebuildSolutionCommand.png" />
+    <Content Include="Resources\RunSolutionCommand.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

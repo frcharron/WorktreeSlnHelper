@@ -12,12 +12,12 @@ namespace SolutionsToolbar
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class SolutionsToolBarCommand
+    internal sealed class BuildSolutionCommand
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int CommandId = 4179;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -30,12 +30,12 @@ namespace SolutionsToolbar
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SolutionsToolBarCommand"/> class.
+        /// Initializes a new instance of the <see cref="BuildSolutionCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private SolutionsToolBarCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private BuildSolutionCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -48,7 +48,7 @@ namespace SolutionsToolbar
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static SolutionsToolBarCommand Instance
+        public static BuildSolutionCommand Instance
         {
             get;
             private set;
@@ -71,12 +71,12 @@ namespace SolutionsToolbar
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in SolutionsToolBarCommand's constructor requires
+            // Switch to the main thread - the call to AddCommand in BuildSolutionCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new SolutionsToolBarCommand(package, commandService);
+            Instance = new BuildSolutionCommand(package, commandService);
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace SolutionsToolbar
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "SolutionsToolBarCommand";
+            string title = "BuildSolutionCommand";
 
             // Show a message box to prove we were here
             VsShellUtilities.ShowMessageBox(

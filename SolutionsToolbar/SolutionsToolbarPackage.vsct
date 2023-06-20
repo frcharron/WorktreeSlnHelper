@@ -15,10 +15,10 @@
         defining some of the constants that we will use inside the file. -->
 
   <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-  <Extern href="stdidcmd.h"/>
+  <Extern href="stdidcmd.h" />
 
   <!--This header contains the command ids for the menus provided by the shell. -->
-  <Extern href="vsshlids.h"/>
+  <Extern href="vsshlids.h" />
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
@@ -33,12 +33,11 @@
 
 
 	<Menus>
-	    <Menu guid="guidSolutionsToolbarPackageCmdSet" id="Toolbar"
-		    type="Toolbar" >
+	    <Menu guid="guidSolutionsToolbarPackageCmdSet" id="Toolbar" type="Toolbar">
 		    <CommandFlag>DefaultDocked</CommandFlag>
 		    <Strings>
-			    <ButtonText>Test Toolbar</ButtonText>
-			    <CommandName>Test Toolbar</CommandName>
+			    <ButtonText>Solutions Toolbar</ButtonText>
+			    <CommandName>Solutions Toolbar</CommandName>
 		    </Strings>
 	    </Menu>
 	</Menus>
@@ -49,10 +48,10 @@
          must be a menu. -->
     <Groups>
       <Group guid="guidSolutionsToolbarPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
 	  <Group guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" priority="0x0000">
-	    <Parent guid="guidSolutionsToolbarPackageCmdSet" id="Toolbar"/>
+	    <Parent guid="guidSolutionsToolbarPackageCmdSet" id="Toolbar" />
 	  </Group>
     </Groups>
 
@@ -67,40 +66,39 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidSolutionsToolbarPackageCmdSet" id="RunToolBarCommandId" priority="0x0102" type="Button">
+      <Button guid="guidSolutionsToolbarPackageCmdSet" id="cmdidRunSolutionCommand" priority="0x0100" type="Button">
         <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
-        <Icon guid="guidImages" id="bmpPic2" />
+        <Icon guid="guidImages2" id="bmpPic1" />
         <Strings>
-          <ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
+          <ButtonText>Invoke RunSolutionCOmmand</ButtonText>
         </Strings>
       </Button>
-        <Button guid="guidSolutionsToolbarPackageCmdSet" id="BuildToolBarCommandId" priority="0x0103" type="Button">
-	        <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
-	        <Icon guid="guidImages" id="bmpPic2" />
-	        <Strings>
-		        <ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
-	        </Strings>
-        </Button>
-		<Button guid="guidSolutionsToolbarPackageCmdSet" id="RebuildToolBarCommandId" priority="0x0104" type="Button">
-			<Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
-			<Icon guid="guidImages" id="bmpPic2" />
-			<Strings>
-				<ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
-			</Strings>
-		</Button>
-		<Button guid="guidSolutionsToolbarPackageCmdSet" id="PublishToolBarCommandId" priority="0x0105" type="Button">
-			<Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
-			<Icon guid="guidImages" id="bmpPic2" />
-			<Strings>
-				<ButtonText>Invoke SolutionsToolBarCommand</ButtonText>
-			</Strings>
-		</Button>
-
-	</Buttons>
+      <Button guid="guidSolutionsToolbarPackageCmdSet" id="cmdidBuildSolutionCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
+        <Icon guid="guidImages3" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Invoke BuildSolutionCommand</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSolutionsToolbarPackageCmdSet" id="cmdidRebuildSolutionCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
+        <Icon guid="guidImages4" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Invoke RebuildSolutionCommand</ButtonText>
+        </Strings>
+      </Button>
+      <Button guid="guidSolutionsToolbarPackageCmdSet" id="cmdidPublishSolutionCommand" priority="0x0100" type="Button">
+        <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
+        <Icon guid="guidImages5" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Invoke PublishSolutionCommand</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
 
 	  <Combos>
-		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="SolutionsToolBarComboId" priority="0x0100" type="DropDownCombo" defaultWidth="130" idCommandList="0">
-			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup"/>
+		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="SolutionsToolBarComboId" priority="0x0100" type="DropDownCombo" defaultWidth="130" idCommandList="SolutionCommandList">
+			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
 			  <Strings>
@@ -109,7 +107,7 @@
 			  </Strings>
 		  </Combo>
 		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="FrameworkToolBarComboId" priority="0x0101" type="DropDownCombo" defaultWidth="100" idCommandList="0">
-			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup"/>
+			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
 			  <Strings>
@@ -126,7 +124,10 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\SolutionsToolBarCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidImages2" href="Resources\RunSolutionCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages3" href="Resources\BuildSolutionCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages4" href="Resources\RebuildSolutionCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages5" href="Resources\PublishSolutionCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
   </Commands>
 
@@ -138,16 +139,55 @@
     <GuidSymbol name="guidSolutionsToolbarPackageCmdSet" value="{7c5421ef-54d3-4f13-b043-5bd988794dfc}">
       <IDSymbol name="MyMenuGroup" value="0x1020" />
 	  <IDSymbol name="SolutionsToolBarComboId" value="0x0100" />
-      <IDSymbol name="FrameworkToolBarComboId" value="0x0101" />
-	  <IDSymbol name="RunToolBarCommandId" value="0x0102" />
-	  <IDSymbol name="BuildToolBarCommandId" value="0x0103" />
-	  <IDSymbol name="RebuildToolBarCommandId" value="0x0104" />
-	  <IDSymbol name="PublishToolBarCommandId" value="0x0105" />
+      <IDSymbol name="FrameworkToolBarComboId" value="0x0100" />
       <IDSymbol name="Toolbar" value="0x1000" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
+	  <IDSymbol name="SolutionCommandList" value="0x0110" />
+	  <IDSymbol name="FrameworkCommandList" value="0x0111" />
+      <IDSymbol value="4177" name="cmdidCommand1" />
+      <IDSymbol value="4178" name="cmdidRunSolutionCommand" />
+      <IDSymbol value="4179" name="cmdidBuildSolutionCommand" />
+      <IDSymbol value="4180" name="cmdidRebuildSolutionCommand" />
+      <IDSymbol value="4181" name="cmdidPublishSolutionCommand" />
     </GuidSymbol>
-
-    <GuidSymbol name="guidImages" value="{14c3d29b-d40a-407d-aed6-ea0e862d0c83}" >
+  
+    <GuidSymbol value="{e7c6b847-6227-4a4e-9aeb-b25f9a0312ee}" name="guidImages1">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{48b3adf4-62e9-4c75-ae2f-3002c82c48d9}" name="guidImages2">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{12e3c3aa-058c-40c6-bbe2-53f879ff9137}" name="guidImages3">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{0b0eaaaa-4baa-4c84-802d-af4e86aa0699}" name="guidImages4">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{4b179669-6c49-4ef5-9df0-cc2421977263}" name="guidImages5">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />
