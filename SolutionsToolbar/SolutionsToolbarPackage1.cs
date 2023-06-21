@@ -18,9 +18,6 @@ namespace SolutionsToolbar
         public const string guidSolutionsToolbarPackageCmdSetString = "7c5421ef-54d3-4f13-b043-5bd988794dfc";
         public static Guid guidSolutionsToolbarPackageCmdSet = new Guid(guidSolutionsToolbarPackageCmdSetString);
 
-        public const string guidImages1String = "e7c6b847-6227-4a4e-9aeb-b25f9a0312ee";
-        public static Guid guidImages1 = new Guid(guidImages1String);
-
         public const string guidImages2String = "48b3adf4-62e9-4c75-ae2f-3002c82c48d9";
         public static Guid guidImages2 = new Guid(guidImages2String);
 
@@ -56,47 +53,31 @@ namespace SolutionsToolbar
         public const int cmdidPublishSolutionCommand = 0x1055;
         public const int cmdidSolutionFileSelectCommand = 0x1056;
         public const int cmdidSolutionFileListCommand = 0x1057;
+        public const int pngRun = 0x0001;
+        public const int pngBuild = 0x0001;
         public const int bmpPic1 = 0x0001;
         public const int bmpPic2 = 0x0002;
         public const int bmpPicSearch = 0x0003;
         public const int bmpPicX = 0x0004;
         public const int bmpPicArrows = 0x0005;
         public const int bmpPicStrikethrough = 0x0006;
-        //public const int bmpPic1 = 0x0001;
-        //public const int bmpPic2 = 0x0002;
-        //public const int bmpPicSearch = 0x0003;
-        //public const int bmpPicX = 0x0004;
-        //public const int bmpPicArrows = 0x0005;
-        //public const int bmpPicStrikethrough = 0x0006;
-        //public const int bmpPic1 = 0x0001;
-        //public const int bmpPic2 = 0x0002;
-        //public const int bmpPicSearch = 0x0003;
-        //public const int bmpPicX = 0x0004;
-        //public const int bmpPicArrows = 0x0005;
-        //public const int bmpPicStrikethrough = 0x0006;
-        //public const int bmpPic1 = 0x0001;
-        //public const int bmpPic2 = 0x0002;
-        //public const int bmpPicSearch = 0x0003;
-        //public const int bmpPicX = 0x0004;
-        //public const int bmpPicArrows = 0x0005;
-        //public const int bmpPicStrikethrough = 0x0006;
-        //public const int bmpPic1 = 0x0001;
-        //public const int bmpPic2 = 0x0002;
-        //public const int bmpPicSearch = 0x0003;
-        //public const int bmpPicX = 0x0004;
-        //public const int bmpPicArrows = 0x0005;
-        //public const int bmpPicStrikethrough = 0x0006;
-        //public const int bmpPic1 = 0x0001;
-        //public const int bmpPic2 = 0x0002;
-        //public const int bmpPicSearch = 0x0003;
-        //public const int bmpPicX = 0x0004;
-        //public const int bmpPicArrows = 0x0005;
-        //public const int bmpPicStrikethrough = 0x0006;
-        //public const int bmpPic1 = 0x0001;
-        //public const int bmpPic2 = 0x0002;
-        //public const int bmpPicSearch = 0x0003;
-        //public const int bmpPicX = 0x0004;
-        //public const int bmpPicArrows = 0x0005;
-        //public const int bmpPicStrikethrough = 0x0006;
+        public const int bmpPic1 = 0x0001;
+        public const int bmpPic2 = 0x0002;
+        public const int bmpPicSearch = 0x0003;
+        public const int bmpPicX = 0x0004;
+        public const int bmpPicArrows = 0x0005;
+        public const int bmpPicStrikethrough = 0x0006;
+        public const int bmpPic1 = 0x0001;
+        public const int bmpPic2 = 0x0002;
+        public const int bmpPicSearch = 0x0003;
+        public const int bmpPicX = 0x0004;
+        public const int bmpPicArrows = 0x0005;
+        public const int bmpPicStrikethrough = 0x0006;
+        public const int bmpPic1 = 0x0001;
+        public const int bmpPic2 = 0x0002;
+        public const int bmpPicSearch = 0x0003;
+        public const int bmpPicX = 0x0004;
+        public const int bmpPicArrows = 0x0005;
+        public const int bmpPicStrikethrough = 0x0006;
     }
 }
