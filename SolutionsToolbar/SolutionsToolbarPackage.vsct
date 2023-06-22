@@ -97,7 +97,7 @@
     </Buttons>
 
 	  <Combos>
-		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="cmdidSolutionFileSelectCommand" priority="0x0100" type="DropDownCombo" defaultWidth="130" idCommandList="cmdidSolutionFileListCommand">
+		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="cmdidSolutionFileSelectCommand" priority="0x0100" type="DropDownCombo" defaultWidth="200" idCommandList="cmdidSolutionFileListCommand">
 			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
@@ -105,7 +105,7 @@
 				  <ButtonText>Solution:</ButtonText>
 			  </Strings>
 		  </Combo>
-		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="FrameworkToolBarComboId" priority="0x0101" type="DropDownCombo" defaultWidth="100" idCommandList="0">
+		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="cmdidFrameworkSelectCommand" priority="0x0101" type="DropDownCombo" defaultWidth="100" idCommandList="cmdidFrameworkListCommand">
 			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
@@ -140,7 +140,6 @@
       <IDSymbol name="FrameworkToolBarComboId" value="0x0100" />
       <IDSymbol name="Toolbar" value="0x1000" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
-	  <IDSymbol name="FrameworkCommandList" value="0x0111" />
       <IDSymbol value="4177" name="cmdidCommand1" />
       <IDSymbol value="4178" name="cmdidRunSolutionCommand" />
       <IDSymbol value="4179" name="cmdidBuildSolutionCommand" />
@@ -148,6 +147,8 @@
       <IDSymbol value="4181" name="cmdidPublishSolutionCommand" />
       <IDSymbol value="4182" name="cmdidSolutionFileSelectCommand" />
       <IDSymbol value="4183" name="cmdidSolutionFileListCommand" />
+	  <IDSymbol value="4184" name="cmdidFrameworkSelectCommand" />
+	  <IDSymbol value="4185" name="cmdidFrameworkListCommand" />
     </GuidSymbol>
 
   

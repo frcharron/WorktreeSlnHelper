@@ -17,17 +17,29 @@ namespace SolutionsToolbar
     internal sealed class SolutionFileSelectCommand
     {
         private string[] dropDownComboChoices = { "Apple", "Orange", "Pears", "Bananas" };
+        private string[] dropDownComboChoices2 = { "Natural", "Syntethic" };
         private string currentDropDownComboChoice = "Apple";
+        private string currentDropDownComboChoice2 = "Natural";
 
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandListId = 4183;
+        public const int SolutionListCommandId = 4183;
 
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4182;
+        public const int SolutionSelectionCommandId = 4182;
+
+        /// <summary>
+        /// Command ID.
+        /// </summary>
+        public const int FrameworkSelectionCommandId = 4184;
+
+        /// <summary>
+        /// Command ID.
+        /// </summary>
+        public const int FrameworkListCommandId = 4185;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -50,13 +62,21 @@ namespace SolutionsToolbar
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
-            var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new OleMenuCommand(new EventHandler(this.Execute), menuCommandID);
+            var menuCommandID = new CommandID(CommandSet, SolutionSelectionCommandId);
+            var menuItem = new OleMenuCommand(new EventHandler(this.ExecuteSolutionSelection), menuCommandID);
             commandService.AddCommand(menuItem);
 
-            var menuListID = new CommandID(CommandSet, CommandListId);
-            var menuListItem = new OleMenuCommand(new EventHandler(this.ExecuteList), menuListID);
+            var menuListID = new CommandID(CommandSet, SolutionListCommandId);
+            var menuListItem = new OleMenuCommand(new EventHandler(this.ExecuteSolutionList), menuListID);
             commandService.AddCommand(menuListItem);
+
+            var frameworkCommandID = new CommandID(CommandSet, FrameworkSelectionCommandId);
+            var frameworkItem = new OleMenuCommand(new EventHandler(this.ExecuteFrameworkSelection), frameworkCommandID);
+            commandService.AddCommand(frameworkItem);
+
+            var frameworkListID = new CommandID(CommandSet, FrameworkListCommandId);
+            var frameworkListItem = new OleMenuCommand(new EventHandler(this.ExecuteFrameworkList), frameworkListID);
+            commandService.AddCommand(frameworkListItem);
         }
 
         /// <summary>
@@ -100,7 +120,7 @@ namespace SolutionsToolbar
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private void ExecuteSolutionSelection(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
@@ -155,7 +175,7 @@ namespace SolutionsToolbar
             }
         }
 
-        private void ExecuteList(object sender, EventArgs e)
+        private void ExecuteSolutionList(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -173,6 +193,87 @@ namespace SolutionsToolbar
                 else if (vOut != IntPtr.Zero)
                 {
                     Marshal.GetNativeVariantForObject(dropDownComboChoices, vOut);
+                }
+                else
+                {
+                    throw (new ArgumentException("No output")); // force an exception to be thrown
+                }
+            }
+        }
+
+        private void ExecuteFrameworkSelection(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
+
+            if (eventArgs != null)
+            {
+                string newChoice = eventArgs.InValue as string;
+                IntPtr vOut = eventArgs.OutValue;
+
+                if (vOut != IntPtr.Zero)
+                {
+                    // when vOut is non-NULL, the IDE is requesting the current value for the combo
+                    Marshal.GetNativeVariantForObject(currentDropDownComboChoice2, vOut);
+                }
+
+                else if (newChoice != null)
+                {
+                    // new value was selected or typed in
+                    // see if it is one of our items
+                    bool validInput = false;
+                    int indexInput = -1;
+                    for (indexInput = 0; indexInput < dropDownComboChoices2.Length; indexInput++)
+                    {
+                        if (string.Compare(dropDownComboChoices2[indexInput], newChoice, StringComparison.CurrentCultureIgnoreCase) == 0)
+                        {
+                            validInput = true;
+                            break;
+                        }
+                    }
+
+                    if (validInput)
+                    {
+                        currentDropDownComboChoice2 = dropDownComboChoices2[indexInput];
+                        VsShellUtilities.ShowMessageBox(
+                            this.package,
+                            currentDropDownComboChoice2,
+                            "MyDropDownCombo",
+                            OLEMSGICON.OLEMSGICON_INFO,
+                            OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                            OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                    }
+                    else
+                    {
+                        throw (new ArgumentException("ParamNotValidStringInList")); // force an exception to be thrown
+                    }
+                }
+            }
+            else
+            {
+                // We should never get here; EventArgs are required.
+                throw (new ArgumentException("EventArgsRequired")); // force an exception to be thrown
+            }
+        }
+
+        private void ExecuteFrameworkList(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            OleMenuCmdEventArgs eventArgs = e as OleMenuCmdEventArgs;
+
+            if (eventArgs != null)
+            {
+                object inParam = eventArgs.InValue;
+                IntPtr vOut = eventArgs.OutValue;
+
+                if (inParam != null)
+                {
+                    throw (new ArgumentException("No param")); // force an exception to be thrown
+                }
+                else if (vOut != IntPtr.Zero)
+                {
+                    Marshal.GetNativeVariantForObject(dropDownComboChoices2, vOut);
                 }
                 else
                 {

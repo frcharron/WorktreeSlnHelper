@@ -42,7 +42,6 @@ namespace SolutionsToolbar
         public const int FrameworkToolBarComboId = 0x0100;
         public const int Toolbar = 0x1000;
         public const int ToolbarGroup = 0x1050;
-        public const int FrameworkCommandList = 0x0111;
         public const int cmdidCommand1 = 0x1051;
         public const int cmdidRunSolutionCommand = 0x1052;
         public const int cmdidBuildSolutionCommand = 0x1053;
@@ -50,6 +49,8 @@ namespace SolutionsToolbar
         public const int cmdidPublishSolutionCommand = 0x1055;
         public const int cmdidSolutionFileSelectCommand = 0x1056;
         public const int cmdidSolutionFileListCommand = 0x1057;
+        public const int cmdidFrameworkSelectCommand = 0x1058;
+        public const int cmdidFrameworkListCommand = 0x1059;
         public const int pngRun = 0x0001;
         public const int pngBuild = 0x0001;
         public const int pngRebuild = 0x0001;
