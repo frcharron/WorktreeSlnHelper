@@ -53,7 +53,7 @@ namespace SolutionsToolbar
             await RebuildSolutionCommand.InitializeAsync(this);
             await PublishSolutionCommand.InitializeAsync(this);
             await SolutionFileSelectCommand.InitializeAsync(this);
-            await SolutionFileListCommand.InitializeAsync(this);
+            //await SolutionFileListCommand.InitializeAsync(this);
         }
 
         #endregion

@@ -32,9 +32,6 @@ namespace SolutionsToolbar
 
         public const string guidImagesString = "d6474e30-29b5-4a5f-a66b-701f1cc0dd81";
         public static Guid guidImages = new Guid(guidImagesString);
-
-        public const string guidImages6String = "52edc332-c4e8-42d0-a4e3-27fb3e6b0bf4";
-        public static Guid guidImages6 = new Guid(guidImages6String);
     }
     /// <summary>
     /// Helper class that encapsulates all CommandIDs uses across VS Package.
@@ -58,6 +55,5 @@ namespace SolutionsToolbar
         public const int pngRebuild = 0x0001;
         public const int pngPublish = 0x0001;
         public const int pngArrowSelect = 0x0001;
-        public const int pngArrowList = 0x0001;
     }
 }

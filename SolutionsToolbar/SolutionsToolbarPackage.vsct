@@ -127,7 +127,6 @@
       <Bitmap guid="guidImages4" href="Resources\RebuildSolutionCommand.png" usedList="pngRebuild" />
       <Bitmap guid="guidImages5" href="Resources\PublishSolutionCommand.png" usedList="pngPublish" />
       <Bitmap guid="guidImages" href="Resources\SolutionFileSelectCommand.png" usedList="pngArrowSelect" />
-      <Bitmap guid="guidImages6" href="Resources\SolutionFileListCommand.png" usedList="pngArrowList" />
     </Bitmaps>
   </Commands>
 
@@ -170,10 +169,6 @@
   
     <GuidSymbol value="{d6474e30-29b5-4a5f-a66b-701f1cc0dd81}" name="guidImages">
       <IDSymbol name="pngArrowSelect" value="1" />
-    </GuidSymbol>
-  
-    <GuidSymbol value="{52edc332-c4e8-42d0-a4e3-27fb3e6b0bf4}" name="guidImages6">
-      <IDSymbol name="pngArrowList" value="1" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

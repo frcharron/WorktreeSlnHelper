@@ -50,7 +50,6 @@
     <Compile Include="PublishSolutionCommand.cs" />
     <Compile Include="RebuildSolutionCommand.cs" />
     <Compile Include="RunSolutionCommand.cs" />
-    <Compile Include="SolutionFileListCommand.cs" />
     <Compile Include="SolutionFileSelectCommand.cs" />
     <Compile Include="SolutionsToolbarPackage.cs" />
     <Compile Include="SolutionsToolbarPackage1.cs">
@@ -89,7 +88,6 @@
     <Content Include="Resources\PublishSolutionCommand.png" />
     <Content Include="Resources\RebuildSolutionCommand.png" />
     <Content Include="Resources\RunSolutionCommand.png" />
-    <Content Include="Resources\SolutionFileListCommand.png" />
     <Content Include="Resources\SolutionFileSelectCommand.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
