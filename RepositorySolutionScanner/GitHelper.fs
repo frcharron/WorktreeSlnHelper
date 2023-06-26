@@ -93,7 +93,8 @@ module GitHelper =
                     let parentFilePath = Path.Combine(pathResult, VS_DIRECTORY_PATH, PARENT_BRANCH_PATH)
                     use fileStream = new StreamReader (path)
                     let gitdir = fileStream.ReadLine().Replace("gitdir: ", "")
-                    let repoPath = gitdir.Split(".git")[0]
+                    let stringSeparator: string array = [|".git"|]
+                    let repoPath = gitdir.Split(stringSeparator, StringSplitOptions.None)[0]
                     let parent = 
                         if File.Exists(parentFilePath) then
                             Some (File.OpenText(parentFilePath).ReadToEnd())

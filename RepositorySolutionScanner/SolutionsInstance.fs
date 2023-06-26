@@ -54,7 +54,7 @@ module SolutionsInstance =
                             parsing fileStream {project with OutputPath = Path.Combine(Path.GetDirectoryName(filename),path)}
                         else if line.Contains "TargetFrameworks" then
                             let framework = 
-                                line.Replace(@"<TargetFrameworks>", "").Replace(@"</TargetFrameworks>", "").TrimStart().TrimEnd().Split(";")
+                                line.Replace(@"<TargetFrameworks>", "").Replace(@"</TargetFrameworks>", "").TrimStart().TrimEnd().Split(';')
                                 |> Array.filter(fun contain -> not (contain.Length = 0))
                             parsing fileStream {project with Framework = framework}
                         else
@@ -158,8 +158,8 @@ module SolutionsInstance =
                 else
                     let line = fileStream.ReadLine()
                     if line.Contains "Project(" && (solution.RunningProject.IsNone) then
-                        let definition = line.Split "="
-                        let property = definition[1].Split ","
+                        let definition = line.Split '='
+                        let property = definition[1].Split ','
                         let project =
                             match solution.RunningProject with
                             | Some project when project.Name.Length = 0 ->
@@ -170,7 +170,7 @@ module SolutionsInstance =
 
                         parsing fileStream {solution with RunningProject = project}
                     else if line.Contains "SolutionGuid" then
-                        let definition = line.Split "="
+                        let definition = line.Split '='
                         let guid =  definition[1].Replace(" ", "").Replace("{", "").Replace("{", "")
                         let customAct, customProj = 
                             customAction.TryFindCustomAction (guid)

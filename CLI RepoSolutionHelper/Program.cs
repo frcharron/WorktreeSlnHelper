@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using RepositorySolutionScanner;
+using System;
 using static RepositorySolutionScanner.GitHelper.GitDirectory;
 
 class TestClass
