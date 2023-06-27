@@ -62,6 +62,12 @@ module Action =
             |> Array.tryFind (fun projAct -> guid.Equals (projAct.SolutionGuid, System.StringComparison.CurrentCultureIgnoreCase) )
 
     let ParsingCustomSolutionFile(filepath: string) = 
-        use fileStream = new StreamReader (filepath)
-        let jsonConfig = fileStream.ReadToEnd()
-        JsonConvert.DeserializeObject<CustonSolutionAction>(jsonConfig)
+        if File.Exists filepath then
+            use fileStream = new StreamReader (filepath)
+            let jsonConfig = fileStream.ReadToEnd()
+            JsonConvert.DeserializeObject<CustonSolutionAction>(jsonConfig)
+        else
+            {
+                CustonSolutionAction = Array.empty
+                CustomProjectAction = Array.empty
+            }

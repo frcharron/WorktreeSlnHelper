@@ -198,3 +198,11 @@ module SolutionsInstance =
                                     PublishDir = publishDir
                                     CustomCommand = customAct
                                 }
+
+        static member ExtractSolutionsName (list: Solution array) =
+            list
+            |> Array.map (fun solution -> solution.Name)
+
+        static member TryFindSOlutionByName (name: string) (list: Solution array) =
+            list
+            |> Array.tryFind (fun solution -> solution.Name.Equals name)

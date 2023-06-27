@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
+using RepositorySolutionScanner;
 
 namespace SolutionsToolbar
 {
@@ -16,10 +17,27 @@ namespace SolutionsToolbar
     /// </summary>
     internal sealed class SolutionFileSelectCommand
     {
+        private class Solutions {
+            private SolutionsInstance.Solution[] listSolutions;
+            private DateTime latestUpdate = DateTime.MinValue;
+
+            public SolutionsInstance.Solution[] GetSolutions() {
+                if (listSolutions == null || listSolutions.Length == 0 || (DateTime.UtcNow - latestUpdate) > TimeSpan.FromMinutes(5)) {
+                    var custom = RepositorySolutionScanner.Action.ParsingCustomSolutionFile("CustomAction.json");
+                    listSolutions = Scanner.StartScan(GitHelper.GetTopLevelDirectory(@"C:\git\Genetec.Softwire_master\Source\SMC.Core"), custom);
+                    latestUpdate = DateTime.UtcNow;
+                }
+                return listSolutions;
+            }
+        }
+
         private string[] dropDownComboChoices = { "Apple", "Orange", "Pears", "Bananas" };
         private string[] dropDownComboChoices2 = { "Natural", "Syntethic" };
         private string currentDropDownComboChoice = "Apple";
         private string currentDropDownComboChoice2 = "Natural";
+
+        private Solutions listSolutionFiles = new Solutions();
+        private string currentSelectedSolution;
 
         /// <summary>
         /// Command ID.
@@ -59,6 +77,11 @@ namespace SolutionsToolbar
         /// <param name="commandService">Command service to add command to, not null.</param>
         private SolutionFileSelectCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
+            var solutions = listSolutionFiles.GetSolutions();
+            if (solutions.Length > 0) {
+                currentSelectedSolution = solutions[0].Name;
+            }
+
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
@@ -133,30 +156,22 @@ namespace SolutionsToolbar
                 if (vOut != IntPtr.Zero)
                 {
                     // when vOut is non-NULL, the IDE is requesting the current value for the combo
-                    Marshal.GetNativeVariantForObject(currentDropDownComboChoice, vOut);
+                    Marshal.GetNativeVariantForObject(currentSelectedSolution, vOut);
                 }
 
                 else if (newChoice != null)
                 {
                     // new value was selected or typed in
                     // see if it is one of our items
-                    bool validInput = false;
-                    int indexInput = -1;
-                    for (indexInput = 0; indexInput < dropDownComboChoices.Length; indexInput++)
-                    {
-                        if (string.Compare(dropDownComboChoices[indexInput], newChoice, StringComparison.CurrentCultureIgnoreCase) == 0)
-                        {
-                            validInput = true;
-                            break;
-                        }
-                    }
+                    var solutions = listSolutionFiles.GetSolutions();
+                    var newSolution = SolutionsInstance.Solution.TryFindSOlutionByName(newChoice, solutions);
 
-                    if (validInput)
+                    if (newSolution != null)
                     {
-                        currentDropDownComboChoice = dropDownComboChoices[indexInput];
+                        currentSelectedSolution = newSolution.Value.Name;
                         VsShellUtilities.ShowMessageBox(
                             this.package,
-                            currentDropDownComboChoice,
+                            currentSelectedSolution,
                             "MyDropDownCombo",
                             OLEMSGICON.OLEMSGICON_INFO,
                             OLEMSGBUTTON.OLEMSGBUTTON_OK,
@@ -192,7 +207,7 @@ namespace SolutionsToolbar
                 }
                 else if (vOut != IntPtr.Zero)
                 {
-                    Marshal.GetNativeVariantForObject(dropDownComboChoices, vOut);
+                    Marshal.GetNativeVariantForObject(SolutionsInstance.Solution.ExtractSolutionsName(listSolutionFiles.GetSolutions()), vOut);
                 }
                 else
                 {
