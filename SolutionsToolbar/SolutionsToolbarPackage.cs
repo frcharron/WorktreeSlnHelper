@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
@@ -35,6 +37,14 @@ namespace SolutionsToolbar
         public const string PackageGuidString = "245ab73f-48b5-4ca1-ba40-22e2434034df";
 
         #region Package Members
+
+
+        public string GetActualSolutionFilePath()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            DTE2 dte = (DTE2)GetService(typeof(DTE));
+            return System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+        }
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place

@@ -203,6 +203,6 @@ module SolutionsInstance =
             list
             |> Array.map (fun solution -> solution.Name)
 
-        static member TryFindSOlutionByName (name: string) (list: Solution array) =
+        static member TryFindSolutionByName (name: string) (list: Solution array) =
             list
             |> Array.tryFind (fun solution -> solution.Name.Equals name)

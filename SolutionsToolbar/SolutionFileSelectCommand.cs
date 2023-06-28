@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 using RepositorySolutionScanner;
+using System.Linq;
+using EnvDTE;
+using EnvDTE80;
+using System.IO;
 
 namespace SolutionsToolbar
 {
@@ -20,24 +24,27 @@ namespace SolutionsToolbar
         private class Solutions {
             private SolutionsInstance.Solution[] listSolutions;
             private DateTime latestUpdate = DateTime.MinValue;
+            private string latestDirectoryPath = "";
 
-            public SolutionsInstance.Solution[] GetSolutions() {
-                if (listSolutions == null || listSolutions.Length == 0 || (DateTime.UtcNow - latestUpdate) > TimeSpan.FromMinutes(5)) {
+            public SolutionsInstance.Solution[] GetSolutions(string directoryRoot) {
+                if (latestDirectoryPath != directoryRoot 
+                        || listSolutions == null 
+                        || listSolutions.Length == 0 
+                        || (DateTime.UtcNow - latestUpdate) > TimeSpan.FromMinutes(5)) {
                     var custom = RepositorySolutionScanner.Action.ParsingCustomSolutionFile("CustomAction.json");
-                    listSolutions = Scanner.StartScan(GitHelper.GetTopLevelDirectory(@"C:\git\Genetec.Softwire_master\Source\SMC.Core"), custom);
+                    listSolutions = Scanner.StartScan(GitHelper.GetTopLevelDirectory(directoryRoot), custom);
                     latestUpdate = DateTime.UtcNow;
+                    latestDirectoryPath = directoryRoot;
                 }
                 return listSolutions;
             }
         }
 
-        private string[] dropDownComboChoices = { "Apple", "Orange", "Pears", "Bananas" };
-        private string[] dropDownComboChoices2 = { "Natural", "Syntethic" };
-        private string currentDropDownComboChoice = "Apple";
-        private string currentDropDownComboChoice2 = "Natural";
+        private DTE dte;
 
         private Solutions listSolutionFiles = new Solutions();
-        private string currentSelectedSolution;
+        private SolutionsInstance.Solution currentSelectedSolution = null;
+        private string currentSelectedFramework;
 
         /// <summary>
         /// Command ID.
@@ -75,12 +82,9 @@ namespace SolutionsToolbar
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private SolutionFileSelectCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private SolutionFileSelectCommand(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
         {
-            var solutions = listSolutionFiles.GetSolutions();
-            if (solutions.Length > 0) {
-                currentSelectedSolution = solutions[0].Name;
-            }
+            this.dte = dte;
 
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -133,7 +137,8 @@ namespace SolutionsToolbar
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new SolutionFileSelectCommand(package, commandService);
+            Instance = new SolutionFileSelectCommand(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
+
         }
 
         /// <summary>
@@ -155,27 +160,33 @@ namespace SolutionsToolbar
 
                 if (vOut != IntPtr.Zero)
                 {
-                    // when vOut is non-NULL, the IDE is requesting the current value for the combo
-                    Marshal.GetNativeVariantForObject(currentSelectedSolution, vOut);
+                    if (currentSelectedSolution == null)
+                    {
+                        var solutionPath = dte.Solution.FullName;
+                        if (!String.IsNullOrEmpty(solutionPath)){
+                            var solutions = listSolutionFiles.GetSolutions(Path.GetDirectoryName(solutionPath));
+                            if (solutions.Length > 0)
+                                currentSelectedSolution = solutions[0];
+                            else
+                                return;
+                        }
+                        else
+                            return;
+                    }
+                        // when vOut is non-NULL, the IDE is requesting the current value for the combo
+                    Marshal.GetNativeVariantForObject(currentSelectedSolution.Name, vOut);
                 }
 
                 else if (newChoice != null)
                 {
                     // new value was selected or typed in
                     // see if it is one of our items
-                    var solutions = listSolutionFiles.GetSolutions();
-                    var newSolution = SolutionsInstance.Solution.TryFindSOlutionByName(newChoice, solutions);
+                    var solutions = listSolutionFiles.GetSolutions(Path.GetDirectoryName(dte.Solution.FullName));
+                    var newSolution = SolutionsInstance.Solution.TryFindSolutionByName(newChoice, solutions);
 
                     if (newSolution != null)
                     {
-                        currentSelectedSolution = newSolution.Value.Name;
-                        VsShellUtilities.ShowMessageBox(
-                            this.package,
-                            currentSelectedSolution,
-                            "MyDropDownCombo",
-                            OLEMSGICON.OLEMSGICON_INFO,
-                            OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                            OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                        currentSelectedSolution = newSolution.Value;
                     }
                     else
                     {
@@ -207,7 +218,7 @@ namespace SolutionsToolbar
                 }
                 else if (vOut != IntPtr.Zero)
                 {
-                    Marshal.GetNativeVariantForObject(SolutionsInstance.Solution.ExtractSolutionsName(listSolutionFiles.GetSolutions()), vOut);
+                    Marshal.GetNativeVariantForObject(SolutionsInstance.Solution.ExtractSolutionsName(listSolutionFiles.GetSolutions(Path.GetDirectoryName(dte.Solution.FullName))), vOut);
                 }
                 else
                 {
@@ -229,34 +240,29 @@ namespace SolutionsToolbar
                 if (vOut != IntPtr.Zero)
                 {
                     // when vOut is non-NULL, the IDE is requesting the current value for the combo
-                    Marshal.GetNativeVariantForObject(currentDropDownComboChoice2, vOut);
+                    if (currentSelectedSolution != null)
+                    {
+                        if (currentSelectedSolution.GetFramework.Length > 0) {
+                            if (String.IsNullOrEmpty(currentSelectedFramework))
+                            {
+                                currentSelectedFramework = currentSelectedSolution.GetFramework[0];
+                            }
+                        }
+                        else
+                        {
+                            currentSelectedFramework = "";
+                        }
+                        Marshal.GetNativeVariantForObject(currentSelectedFramework, vOut);
+                    }
+                    else
+                        return;
                 }
 
                 else if (newChoice != null)
                 {
-                    // new value was selected or typed in
-                    // see if it is one of our items
-                    bool validInput = false;
-                    int indexInput = -1;
-                    for (indexInput = 0; indexInput < dropDownComboChoices2.Length; indexInput++)
+                    if (currentSelectedSolution != null && currentSelectedSolution.GetFramework.Contains(newChoice))
                     {
-                        if (string.Compare(dropDownComboChoices2[indexInput], newChoice, StringComparison.CurrentCultureIgnoreCase) == 0)
-                        {
-                            validInput = true;
-                            break;
-                        }
-                    }
-
-                    if (validInput)
-                    {
-                        currentDropDownComboChoice2 = dropDownComboChoices2[indexInput];
-                        VsShellUtilities.ShowMessageBox(
-                            this.package,
-                            currentDropDownComboChoice2,
-                            "MyDropDownCombo",
-                            OLEMSGICON.OLEMSGICON_INFO,
-                            OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                            OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                        currentSelectedFramework = newChoice;
                     }
                     else
                     {
@@ -288,7 +294,13 @@ namespace SolutionsToolbar
                 }
                 else if (vOut != IntPtr.Zero)
                 {
-                    Marshal.GetNativeVariantForObject(dropDownComboChoices2, vOut);
+                    if (currentSelectedSolution != null)
+                    {
+                        Marshal.GetNativeVariantForObject(currentSelectedSolution.GetFramework, vOut);
+                    }
+                    else {
+                        Marshal.GetNativeVariantForObject("", vOut);
+                    }
                 }
                 else
                 {
