@@ -47,11 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="BuildSolutionCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PublishSolutionCommand.cs" />
-    <Compile Include="RebuildSolutionCommand.cs" />
-    <Compile Include="RunSolutionCommand.cs" />
     <Compile Include="SolutionFileSelectCommand.cs" />
     <Compile Include="SolutionsToolbarPackage.cs" />
     <Compile Include="SolutionsToolbarPackage1.cs">

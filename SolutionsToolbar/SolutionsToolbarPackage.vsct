@@ -95,7 +95,6 @@
         </Strings>
       </Button>
     </Buttons>
-
 	  <Combos>
 		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="cmdidSolutionFileSelectCommand" priority="0x0100" type="DropDownCombo" defaultWidth="200" idCommandList="cmdidSolutionFileListCommand">
 			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
@@ -110,7 +109,7 @@
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
 			  <Strings>
-				  <ButtonText>Framework:</ButtonText>
+				  <ButtonText></ButtonText>
 			  </Strings>
 		  </Combo>
 	  </Combos>

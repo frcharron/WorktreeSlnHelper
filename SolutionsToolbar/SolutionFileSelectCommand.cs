@@ -49,6 +49,26 @@ namespace SolutionsToolbar
         /// <summary>
         /// Command ID.
         /// </summary>
+        public const int RunCommandId = 4178;
+
+        /// <summary>
+        /// Command ID.
+        /// </summary>
+        public const int BuildCommandId = 4179;
+
+        /// <summary>
+        /// Command ID.
+        /// </summary>
+        public const int RebuildCommandId = 4180;
+
+        /// <summary>
+        /// Command ID.
+        /// </summary>
+        public const int PublishCommandId = 4181;
+
+        /// <summary>
+        /// Command ID.
+        /// </summary>
         public const int SolutionListCommandId = 4183;
 
         /// <summary>
@@ -89,9 +109,25 @@ namespace SolutionsToolbar
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
-            var menuCommandID = new CommandID(CommandSet, SolutionSelectionCommandId);
-            var menuItem = new OleMenuCommand(new EventHandler(this.ExecuteSolutionSelection), menuCommandID);
-            commandService.AddCommand(menuItem);
+            var menuRunCommandID = new CommandID(CommandSet, RunCommandId);
+            var menuRunItem = new MenuCommand(this.ExecuteRun, menuRunCommandID);
+            commandService.AddCommand(menuRunItem);
+
+            var menuBuildCommandID = new CommandID(CommandSet, BuildCommandId);
+            var menuBuildItem = new MenuCommand(this.BuildExecute, menuBuildCommandID);
+            commandService.AddCommand(menuBuildItem);
+
+            var menuRebuildCommandID = new CommandID(CommandSet, RebuildCommandId);
+            var menuRebuildItem = new MenuCommand(this.RebuildExecute, menuRebuildCommandID);
+            commandService.AddCommand(menuRebuildItem);
+
+            var menuPublishCommandID = new CommandID(CommandSet, PublishCommandId);
+            var menuPublishItem = new MenuCommand(this.PublishExecute, menuPublishCommandID);
+            commandService.AddCommand(menuPublishItem);
+
+            var menuSelectCommandID = new CommandID(CommandSet, SolutionSelectionCommandId);
+            var menuSelectItem = new OleMenuCommand(new EventHandler(this.ExecuteSolutionSelection), menuSelectCommandID);
+            commandService.AddCommand(menuSelectItem);
 
             var menuListID = new CommandID(CommandSet, SolutionListCommandId);
             var menuListItem = new OleMenuCommand(new EventHandler(this.ExecuteSolutionList), menuListID);
@@ -99,6 +135,7 @@ namespace SolutionsToolbar
 
             var frameworkCommandID = new CommandID(CommandSet, FrameworkSelectionCommandId);
             var frameworkItem = new OleMenuCommand(new EventHandler(this.ExecuteFrameworkSelection), frameworkCommandID);
+            frameworkItem.BeforeQueryStatus += OnFrameworkSelectQueryStatus;
             commandService.AddCommand(frameworkItem);
 
             var frameworkListID = new CommandID(CommandSet, FrameworkListCommandId);
@@ -148,6 +185,71 @@ namespace SolutionsToolbar
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
+
+        private void ExecuteRun(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+            string title = "RunSolutionCOmmand";
+
+            // Show a message box to prove we were here
+            VsShellUtilities.ShowMessageBox(
+                this.package,
+                message,
+                title,
+                OLEMSGICON.OLEMSGICON_INFO,
+                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
+        private void BuildExecute(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+            string title = "BuildSolutionCommand";
+
+            // Show a message box to prove we were here
+            VsShellUtilities.ShowMessageBox(
+                this.package,
+                message,
+                title,
+                OLEMSGICON.OLEMSGICON_INFO,
+                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
+        private void RebuildExecute(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+            string title = "RebuildSolution";
+
+            // Show a message box to prove we were here
+            VsShellUtilities.ShowMessageBox(
+                this.package,
+                message,
+                title,
+                OLEMSGICON.OLEMSGICON_INFO,
+                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
+        private void PublishExecute(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+            string title = "PublishSolutionCommand";
+
+            // Show a message box to prove we were here
+            VsShellUtilities.ShowMessageBox(
+                this.package,
+                message,
+                title,
+                OLEMSGICON.OLEMSGICON_INFO,
+                OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
         private void ExecuteSolutionSelection(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -305,6 +407,19 @@ namespace SolutionsToolbar
                 else
                 {
                     throw (new ArgumentException("No output")); // force an exception to be thrown
+                }
+            }
+        }
+
+        private void OnFrameworkSelectQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand frameworkCB = sender as OleMenuCommand;
+            if (frameworkCB != null)
+            {
+                frameworkCB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.GetFramework.Length > 0);
+                if(!frameworkCB.Enabled)
+                {
+                    frameworkCB.Text = string.Empty;
                 }
             }
         }
