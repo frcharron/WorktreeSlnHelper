@@ -70,28 +70,28 @@
         <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
         <Icon guid="guidImages2" id="pngRun" />
         <Strings>
-          <ButtonText>Invoke RunSolutionCOmmand</ButtonText>
+          <ButtonText>Run selected solution</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSolutionsToolbarPackageCmdSet" id="cmdidBuildSolutionCommand" priority="0x0103" type="Button">
         <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
         <Icon guid="guidImages3" id="pngBuild" />
         <Strings>
-          <ButtonText>Invoke BuildSolutionCommand</ButtonText>
+          <ButtonText>Build selected solution</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSolutionsToolbarPackageCmdSet" id="cmdidRebuildSolutionCommand" priority="0x0104" type="Button">
         <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
         <Icon guid="guidImages4" id="pngRebuild" />
         <Strings>
-          <ButtonText>Invoke RebuildSolutionCommand</ButtonText>
+          <ButtonText>Rebuild selected solution</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidSolutionsToolbarPackageCmdSet" id="cmdidPublishSolutionCommand" priority="0x0105" type="Button">
         <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
         <Icon guid="guidImages5" id="pngPublish" />
         <Strings>
-          <ButtonText>Invoke PublishSolutionCommand</ButtonText>
+          <ButtonText>Publish selected solution</ButtonText>
         </Strings>
       </Button>
     </Buttons>

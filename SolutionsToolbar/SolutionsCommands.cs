@@ -19,7 +19,7 @@ namespace SolutionsToolbar
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class SolutionFileSelectCommand
+    internal sealed class SolutionsCommands
     {
         private class Solutions {
             private SolutionsInstance.Solution[] listSolutions;
@@ -97,12 +97,12 @@ namespace SolutionsToolbar
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SolutionFileSelectCommand"/> class.
+        /// Initializes a new instance of the <see cref="SolutionsCommands"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private SolutionFileSelectCommand(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
+        private SolutionsCommands(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
         {
             this.dte = dte;
 
@@ -110,19 +110,23 @@ namespace SolutionsToolbar
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
             var menuRunCommandID = new CommandID(CommandSet, RunCommandId);
-            var menuRunItem = new MenuCommand(this.ExecuteRun, menuRunCommandID);
+            var menuRunItem = new OleMenuCommand(new EventHandler(this.ExecuteRun), menuRunCommandID);
+            menuRunItem.BeforeQueryStatus += OnRunQueryStatus;
             commandService.AddCommand(menuRunItem);
 
             var menuBuildCommandID = new CommandID(CommandSet, BuildCommandId);
-            var menuBuildItem = new MenuCommand(this.BuildExecute, menuBuildCommandID);
+            var menuBuildItem = new OleMenuCommand(new EventHandler(this.BuildExecute), menuBuildCommandID);
+            menuBuildItem.BeforeQueryStatus += OnBuildQueryStatus;
             commandService.AddCommand(menuBuildItem);
 
             var menuRebuildCommandID = new CommandID(CommandSet, RebuildCommandId);
-            var menuRebuildItem = new MenuCommand(this.RebuildExecute, menuRebuildCommandID);
+            var menuRebuildItem = new OleMenuCommand(new EventHandler(this.RebuildExecute), menuRebuildCommandID);
+            menuRebuildItem.BeforeQueryStatus += OnRebuildQueryStatus;
             commandService.AddCommand(menuRebuildItem);
 
             var menuPublishCommandID = new CommandID(CommandSet, PublishCommandId);
-            var menuPublishItem = new MenuCommand(this.PublishExecute, menuPublishCommandID);
+            var menuPublishItem = new OleMenuCommand(new EventHandler(this.PublishExecute), menuPublishCommandID);
+            menuPublishItem.BeforeQueryStatus += OnPublishQueryStatus;
             commandService.AddCommand(menuPublishItem);
 
             var menuSelectCommandID = new CommandID(CommandSet, SolutionSelectionCommandId);
@@ -146,7 +150,7 @@ namespace SolutionsToolbar
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static SolutionFileSelectCommand Instance
+        public static SolutionsCommands Instance
         {
             get;
             private set;
@@ -174,7 +178,7 @@ namespace SolutionsToolbar
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new SolutionFileSelectCommand(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
+            Instance = new SolutionsCommands(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
 
         }
 
@@ -189,65 +193,38 @@ namespace SolutionsToolbar
         private void ExecuteRun(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "RunSolutionCOmmand";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            if (currentSelectedSolution != null)
+            {
+                currentSelectedSolution.Run(currentSelectedFramework);
+            }
         }
 
         private void BuildExecute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "BuildSolutionCommand";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            if (currentSelectedSolution != null)
+            {
+                currentSelectedSolution.Build(currentSelectedFramework, null);
+            }
         }
 
         private void RebuildExecute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "RebuildSolution";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            if (currentSelectedSolution != null)
+            {
+                currentSelectedSolution.Rebuild(currentSelectedFramework, null);
+            }
         }
 
         private void PublishExecute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "PublishSolutionCommand";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            if (currentSelectedSolution != null)
+            {
+                var output = new System.Text.StringBuilder();
+                currentSelectedSolution.Publish(currentSelectedFramework, null);
+            }
         }
 
         private void ExecuteSolutionSelection(object sender, EventArgs e)
@@ -419,7 +396,56 @@ namespace SolutionsToolbar
                 frameworkCB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.GetFramework.Length > 0);
                 if(!frameworkCB.Enabled)
                 {
+                    currentSelectedFramework = null;
                     frameworkCB.Text = string.Empty;
+                }
+            }
+        }
+
+        private void OnPublishQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand PublishB = sender as OleMenuCommand;
+            if (PublishB != null)
+            {
+                PublishB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.CanPublish);
+            }
+        }
+        private void OnRunQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand RunB = sender as OleMenuCommand;
+            if (RunB != null)
+            {
+                RunB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.CanRun);
+                if (!RunB.Enabled)
+                {
+                    currentSelectedFramework = null;
+                    RunB.Text = string.Empty;
+                }
+            }
+        }
+        private void OnBuildQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand BuildB = sender as OleMenuCommand;
+            if (BuildB != null)
+            {
+                BuildB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.CanBuild);
+                if (!BuildB.Enabled)
+                {
+                    currentSelectedFramework = null;
+                    BuildB.Text = string.Empty;
+                }
+            }
+        }
+        private void OnRebuildQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand RebuildB = sender as OleMenuCommand;
+            if (RebuildB != null)
+            {
+                RebuildB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.CanBuild);
+                if (!RebuildB.Enabled)
+                {
+                    currentSelectedFramework = null;
+                    RebuildB.Text = string.Empty;
                 }
             }
         }
