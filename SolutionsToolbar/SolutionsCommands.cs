@@ -393,7 +393,7 @@ namespace SolutionsToolbar
             OleMenuCommand frameworkCB = sender as OleMenuCommand;
             if (frameworkCB != null)
             {
-                frameworkCB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.GetFramework.Length > 0);
+                frameworkCB.Visible = frameworkCB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.GetFramework.Length > 0);
                 if(!frameworkCB.Enabled)
                 {
                     currentSelectedFramework = null;

@@ -101,7 +101,7 @@
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
 			  <Strings>
-				  <ButtonText>Solution:</ButtonText>
+				  <ButtonText>Solutions:</ButtonText>
 			  </Strings>
 		  </Combo>
 		  <Combo guid="guidSolutionsToolbarPackageCmdSet" id="cmdidFrameworkSelectCommand" priority="0x0101" type="DropDownCombo" defaultWidth="100" idCommandList="cmdidFrameworkListCommand">

@@ -99,7 +99,7 @@ module SolutionsInstance =
                             sprintf "--framework %s " framework
                         | _ ->
                             ""
-                    executeProcess x.Path "dotnet" (sprintf "build %s.sln %s-c Debug" x.Name commandArg) output
+                    executeProcess x.Path "dotnet" (sprintf "build %s.sln %s-c Debug --force" x.Name commandArg) output
             printf "Exit Code: %d\n" result
         member x.Rebuild(framework: string option) (output: Text.StringBuilder option) =
             match x.CustomCommand with
@@ -120,12 +120,14 @@ module SolutionsInstance =
                 | Some command when command.PublishCmd.IsSome ->
                     command.PublishCmd.Value.Execute output
                 | _ ->
-                    let frameworkCmd =
+                    let frameworkCmd, publishDir =
                         match framework with
-                        | Some framework -> sprintf "--framework %s" framework
-                        | None -> ""
-                    let result = executeProcess x.Path "dotnet" (sprintf "publish %s.sln -c Release --output %s %s" x.Name x.PublishDir frameworkCmd) output
-                    executeProcess x.Path "explorer.exe" x.PublishDir None |> ignore
+                        | Some framework -> (sprintf "--framework %s" framework), Path.Combine(x.PublishDir, framework)
+                        | None -> "", x.PublishDir
+                    if  not (System.IO.Directory.Exists(publishDir)) then
+                        System.IO.Directory.CreateDirectory publishDir |> ignore
+                    let result = executeProcess x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) output
+                    executeProcess x.Path "explorer.exe" publishDir None |> ignore
                     result
             printf "Exit Code: %d\n" result
         override x.ToString() =
@@ -147,10 +149,7 @@ module SolutionsInstance =
         static member Create (filename: string) (customAction: CustonSolutionAction) =
             use fileStream = new StreamReader (filename)
             let publishDir = 
-                let dir = Path.Combine(Environment.GetEnvironmentVariable("TEMP"), Path.GetFileNameWithoutExtension(filename))
-                if  not (System.IO.Directory.Exists(dir)) then
-                    System.IO.Directory.CreateDirectory dir |> ignore
-                dir
+                Path.Combine(Environment.GetEnvironmentVariable("TEMP"), Path.GetFileNameWithoutExtension(filename))
 
             let rec parsing (fileStream : StreamReader) (solution: Solution) : Solution =
                 if fileStream.EndOfStream then

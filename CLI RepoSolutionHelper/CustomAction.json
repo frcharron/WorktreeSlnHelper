@@ -7,9 +7,9 @@
         "Case": "Some",
         "Fields": [
           {
-            "RelativeWorkingDirectory": "C:\\temp",
-            "Application": "calc.exe",
-            "Arguments": ""
+            "RelativeWorkingDirectory": "Source",
+            "Application": "BuildFable.bat",
+            "Arguments": "bin\\Debug\\SMC\\net7.0"
           }
         ]
       },
@@ -17,33 +17,9 @@
         "Case": "Some",
         "Fields": [
           {
-            "RelativeWorkingDirectory": "",
-            "Application": "",
-            "Arguments": ""
-          }
-        ]
-      }
-    },
-    {
-      "Guid": "Fable2",
-      "BuildCmd": null,
-      "RebuildCmd": {
-        "Case": "Some",
-        "Fields": [
-          {
-            "RelativeWorkingDirectory": "C:\\temp",
-            "Application": "C:\\temp",
-            "Arguments": "2"
-          }
-        ]
-      },
-      "PublishCmd": {
-        "Case": "Some",
-        "Fields": [
-          {
-            "RelativeWorkingDirectory": "",
-            "Application": "",
-            "Arguments": ""
+            "RelativeWorkingDirectory": "Source",
+            "Application": "preppackage.bat",
+            "Arguments": "bin\\Debug\\SMC\\net7.0"
           }
         ]
       }
