@@ -38,14 +38,6 @@ namespace SolutionsToolbar
 
         #region Package Members
 
-
-        public string GetActualSolutionFilePath()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            DTE2 dte = (DTE2)GetService(typeof(DTE));
-            return System.IO.Path.GetDirectoryName(dte.Solution.FullName);
-        }
-
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.

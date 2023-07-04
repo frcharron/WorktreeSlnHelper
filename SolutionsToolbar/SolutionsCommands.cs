@@ -13,6 +13,8 @@ using System.Linq;
 using EnvDTE;
 using EnvDTE80;
 using System.IO;
+using Microsoft.IO;
+using Path = System.IO.Path;
 
 namespace SolutionsToolbar
 {
@@ -31,7 +33,10 @@ namespace SolutionsToolbar
                         || listSolutions == null 
                         || listSolutions.Length == 0 
                         || (DateTime.UtcNow - latestUpdate) > TimeSpan.FromMinutes(5)) {
-                    var custom = RepositorySolutionScanner.Action.ParsingCustomSolutionFile("CustomAction.json");
+                    string codebase = typeof(SolutionsToolbarPackage).Assembly.CodeBase;
+                    var uri = new Uri(codebase, UriKind.Absolute);
+                    var fileAction = Path.Combine(Path.GetDirectoryName(uri.LocalPath), "CustomAction.json");
+                    var custom = RepositorySolutionScanner.Action.ParsingCustomSolutionFile(fileAction);
                     listSolutions = Scanner.StartScan(GitHelper.GetTopLevelDirectory(directoryRoot), custom);
                     latestUpdate = DateTime.UtcNow;
                     latestDirectoryPath = directoryRoot;
@@ -179,7 +184,6 @@ namespace SolutionsToolbar
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
             Instance = new SolutionsCommands(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
-
         }
 
         /// <summary>

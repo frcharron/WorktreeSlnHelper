@@ -66,6 +66,9 @@ module SolutionsInstance =
             with _ ->
                 None
 
+    let cleanSolutionCommand path name arg out = 
+        executeProcess path "dotnet" (sprintf "build %s.sln %s" name arg) out
+
     type Solution = {
         Guid : string
         Name : string
@@ -107,7 +110,23 @@ module SolutionsInstance =
                 let result = command.RebuildCmd.Value.Execute output
                 printf "Exit Code: %d\n" result
             | _ ->
+                let outputLocal = new Text.StringBuilder() |> Some //That will block the command until completed
+                let commandArg = 
+                    match framework with
+                    | Some framework when Array.contains framework x.GetFramework ->
+                        sprintf "--framework %s " framework
+                    | _ ->
+                        ""
+                let _ = cleanSolutionCommand x.Path x.Name commandArg outputLocal
                 x.Build(framework) (output)
+        member x.Clean(framework: string option) (output) =
+            let commandArg = 
+                match framework with
+                | Some framework when Array.contains framework x.GetFramework ->
+                    sprintf "--framework %s " framework
+                | _ ->
+                    ""
+            cleanSolutionCommand x.Path x.Name commandArg output
         member x.Run(framework: string option) =
             match x.RunningProject with 
             | Some project -> 
