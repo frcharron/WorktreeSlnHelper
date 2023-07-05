@@ -30,5 +30,6 @@ module ExecuteHelper =
             let psi = new Diagnostics.ProcessStartInfo(processName, processArgs) 
             psi.WorkingDirectory <- workingDir
             psi.UseShellExecute <- true
-            Diagnostics.Process.Start(psi) |> ignore
+            let proc = Diagnostics.Process.Start(psi)
+            proc.WaitForExit()
         

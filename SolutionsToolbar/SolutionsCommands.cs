@@ -199,7 +199,7 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                currentSelectedSolution.Run(currentSelectedFramework);
+                object value = Task.Run(() => currentSelectedSolution.Run(currentSelectedFramework));
             }
         }
 
@@ -208,7 +208,7 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                currentSelectedSolution.Build(currentSelectedFramework, null);
+                object value = Task.Run(() => currentSelectedSolution.Build(currentSelectedFramework, null));
             }
         }
 
@@ -217,21 +217,17 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                currentSelectedSolution.Rebuild(currentSelectedFramework, null);
+                object value = Task.Run(() => currentSelectedSolution.Rebuild(currentSelectedFramework, null));
             }
         }
 
-        private async void PublishExecute(object sender, EventArgs e)
+        private void PublishExecute(object sender, EventArgs e)
         {
-            try
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (currentSelectedSolution != null)
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                if (currentSelectedSolution != null)
-                {
-                    currentSelectedSolution.Publish(currentSelectedFramework, null);
-                }
+                object value = Task.Run(() => currentSelectedSolution.Publish(currentSelectedFramework, null));
             }
-            catch (Exception ex) { }
         }
 
         private void ExecuteSolutionSelection(object sender, EventArgs e)
