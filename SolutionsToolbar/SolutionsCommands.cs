@@ -221,14 +221,17 @@ namespace SolutionsToolbar
             }
         }
 
-        private void PublishExecute(object sender, EventArgs e)
+        private async void PublishExecute(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (currentSelectedSolution != null)
+            try
             {
-                var output = new System.Text.StringBuilder();
-                currentSelectedSolution.Publish(currentSelectedFramework, null);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                if (currentSelectedSolution != null)
+                {
+                    currentSelectedSolution.Publish(currentSelectedFramework, null);
+                }
             }
+            catch (Exception ex) { }
         }
 
         private void ExecuteSolutionSelection(object sender, EventArgs e)

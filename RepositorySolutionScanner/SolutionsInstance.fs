@@ -14,19 +14,17 @@ module SolutionsInstance =
     }
     with 
         member x.Run(framework: string option) =
-            let result =
-                match x.CustomCommand with
-                | Some command ->
-                     command.RunCmd.Execute(None)
-                | _ ->
-                    let outputPath = 
-                        match framework with
-                        | Some framework when Array.contains framework x.Framework ->
-                            Path.Combine(x.OutputPath, framework)
-                        | _ ->
-                            Path.Combine(x.OutputPath)
-                    executeProcess outputPath (Path.Combine(outputPath, (x.Name+".exe"))) "" None
-            printf "Exit code %d\n" result
+            match x.CustomCommand with
+            | Some command ->
+                    command.RunCmd.Execute(None)
+            | _ ->
+                let outputPath = 
+                    match framework with
+                    | Some framework when Array.contains framework x.Framework ->
+                        Path.Combine(x.OutputPath, framework)
+                    | _ ->
+                        Path.Combine(x.OutputPath)
+                ExecuteStreamOutput outputPath (Path.Combine(outputPath, (x.Name+".exe"))) "" None
         override x.ToString() =
             sprintf "\n\t\tName: %s\n\t\tPath: %s\n" x.Name x.OutputPath
         static member Default =
@@ -67,7 +65,7 @@ module SolutionsInstance =
                 None
 
     let cleanSolutionCommand path name arg out = 
-        executeProcess path "dotnet" (sprintf "build %s.sln %s" name arg) out
+        ExecuteStreamOutput path "dotnet" (sprintf "build %s.sln %s" name arg) out
 
     type Solution = {
         Guid : string
@@ -89,26 +87,23 @@ module SolutionsInstance =
             | Some project -> project.Framework
             | None -> Array.empty
         member x.Open() =
-            executeProcess x.Path x.GetFilePath "" None
+            ExecuteStreamOutput x.Path x.GetFilePath "" None
         member x.Build(framework: string option) (output: Text.StringBuilder option) =
-            let result =
-                match x.CustomCommand with
-                | Some command when command.BuildCmd.IsSome ->
-                    command.BuildCmd.Value.Execute output
-                | _ ->
-                    let commandArg = 
-                        match framework with
-                        | Some framework when Array.contains framework x.GetFramework ->
-                            sprintf "--framework %s " framework
-                        | _ ->
-                            ""
-                    executeProcess x.Path "dotnet" (sprintf "build %s.sln %s-c Debug --force" x.Name commandArg) output
-            printf "Exit Code: %d\n" result
+            match x.CustomCommand with
+            | Some command when command.BuildCmd.IsSome ->
+                command.BuildCmd.Value.Execute output
+            | _ ->
+                let commandArg = 
+                    match framework with
+                    | Some framework when Array.contains framework x.GetFramework ->
+                        sprintf "--framework %s " framework
+                    | _ ->
+                        ""
+                ExecuteStreamOutput x.Path "dotnet" (sprintf "build %s.sln %s-c Debug --force" x.Name commandArg) output
         member x.Rebuild(framework: string option) (output: Text.StringBuilder option) =
             match x.CustomCommand with
             | Some command when command.RebuildCmd.IsSome ->
-                let result = command.RebuildCmd.Value.Execute output
-                printf "Exit Code: %d\n" result
+                command.RebuildCmd.Value.Execute output
             | _ ->
                 let outputLocal = new Text.StringBuilder() |> Some //That will block the command until completed
                 let commandArg = 
@@ -127,28 +122,25 @@ module SolutionsInstance =
                 | _ ->
                     ""
             cleanSolutionCommand x.Path x.Name commandArg output
-        member x.Run(framework: string option) =
+        member x.Run(framework: string option) = 
             match x.RunningProject with 
             | Some project -> 
                 project.Run(framework)
             | None -> 
                 printf "not define"
         member x.Publish(framework: string option) (output: Text.StringBuilder option) =
-            let result =
-                match x.CustomCommand with
-                | Some command when command.PublishCmd.IsSome ->
-                    command.PublishCmd.Value.Execute output
-                | _ ->
-                    let frameworkCmd, publishDir =
-                        match framework with
-                        | Some framework -> (sprintf "--framework %s" framework), Path.Combine(x.PublishDir, framework)
-                        | None -> "", x.PublishDir
-                    if  not (System.IO.Directory.Exists(publishDir)) then
-                        System.IO.Directory.CreateDirectory publishDir |> ignore
-                    let result = executeProcess x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) output
-                    executeProcess x.Path "explorer.exe" publishDir None |> ignore
-                    result
-            printf "Exit Code: %d\n" result
+            match x.CustomCommand with
+            | Some command when command.PublishCmd.IsSome ->
+                command.PublishCmd.Value.Execute output
+            | _ ->
+                let frameworkCmd, publishDir =
+                    match framework with
+                    | Some framework -> (sprintf "--framework %s" framework), Path.Combine(x.PublishDir, framework)
+                    | None -> "", x.PublishDir
+                if  not (System.IO.Directory.Exists(publishDir)) then
+                    System.IO.Directory.CreateDirectory publishDir |> ignore
+                ExecuteStreamOutput x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) None
+                ExecuteStreamOutput x.Path "explorer.exe" publishDir None |> ignore
         override x.ToString() =
             let project =
                 match x.RunningProject with 

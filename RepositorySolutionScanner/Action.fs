@@ -14,7 +14,7 @@ module Action =
     }
     with
         member x.Execute (output: Text.StringBuilder option) =
-            executeProcess x.RelativeWorkingDirectory x.Application x.Arguments output
+            ExecuteStreamOutput x.RelativeWorkingDirectory x.Application x.Arguments output
         static member Create (wd: string) (app: string) (arg: string) = 
             {
                 RelativeWorkingDirectory = wd
