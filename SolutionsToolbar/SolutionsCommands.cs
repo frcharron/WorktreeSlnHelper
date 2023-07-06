@@ -199,7 +199,7 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                object value = Task.Run(() => currentSelectedSolution.Run(currentSelectedFramework));
+                object value = currentSelectedSolution.Run(currentSelectedFramework);
             }
         }
 
@@ -208,7 +208,7 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                object value = Task.Run(() => currentSelectedSolution.Build(currentSelectedFramework, null));
+                object value = currentSelectedSolution.Build(currentSelectedFramework, null);
             }
         }
 
@@ -217,7 +217,7 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                object value = Task.Run(() => currentSelectedSolution.Rebuild(currentSelectedFramework, null));
+                object value = currentSelectedSolution.Rebuild(currentSelectedFramework, null);
             }
         }
 
@@ -226,7 +226,7 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                object value = Task.Run(() => currentSelectedSolution.Publish(currentSelectedFramework, null));
+                object task = currentSelectedSolution.Publish(currentSelectedFramework, null);
             }
         }
 

@@ -4,6 +4,7 @@ open System.IO
 open Action
 open ExecuteHelper
 open System
+open System.Threading.Tasks
 
 module SolutionsInstance =
     type Project = {
@@ -67,6 +68,19 @@ module SolutionsInstance =
     let cleanSolutionCommand path name arg out = 
         ExecuteStreamOutput path "dotnet" (sprintf "build %s.sln %s" name arg) out
 
+    let build path name framework listFramework customCmd output =
+        match customCmd with
+        | Some command when command.BuildCmd.IsSome ->
+            command.BuildCmd.Value.Execute output
+        | _ ->
+            let commandArg = 
+                match framework with
+                | Some framework when Array.contains framework listFramework ->
+                    sprintf "--framework %s " framework
+                | _ ->
+                    ""
+            ExecuteStreamOutput path "dotnet" (sprintf "build %s.sln %s-c Debug --force" name commandArg) output
+
     type Solution = {
         Guid : string
         Name : string
@@ -88,59 +102,61 @@ module SolutionsInstance =
             | None -> Array.empty
         member x.Open() =
             ExecuteStreamOutput x.Path x.GetFilePath "" None
+
         member x.Build(framework: string option) (output: Text.StringBuilder option) =
-            match x.CustomCommand with
-            | Some command when command.BuildCmd.IsSome ->
-                command.BuildCmd.Value.Execute output
-            | _ ->
-                let commandArg = 
-                    match framework with
-                    | Some framework when Array.contains framework x.GetFramework ->
-                        sprintf "--framework %s " framework
-                    | _ ->
-                        ""
-                ExecuteStreamOutput x.Path "dotnet" (sprintf "build %s.sln %s-c Debug --force" x.Name commandArg) output
+            Task.Run(fun () -> 
+                build x.Path x.Name framework x.GetFramework x.CustomCommand output
+            )
         member x.Rebuild(framework: string option) (output: Text.StringBuilder option) =
-            match x.CustomCommand with
-            | Some command when command.RebuildCmd.IsSome ->
-                command.RebuildCmd.Value.Execute output
-            | _ ->
-                let outputLocal = new Text.StringBuilder() |> Some //That will block the command until completed
+            Task.Run(fun () -> 
+                match x.CustomCommand with
+                | Some command when command.RebuildCmd.IsSome ->
+                    command.RebuildCmd.Value.Execute output
+                | _ ->
+                    let outputLocal = new Text.StringBuilder() |> Some //That will block the command until completed
+                    let commandArg = 
+                        match framework with
+                        | Some framework when Array.contains framework x.GetFramework ->
+                            sprintf "--framework %s " framework
+                        | _ ->
+                            ""
+                    let _ = cleanSolutionCommand x.Path x.Name commandArg outputLocal
+                    cleanSolutionCommand x.Path x.Name commandArg output
+                    build x.Path x.Name framework x.GetFramework x.CustomCommand output
+            )
+        member x.Clean(framework: string option) (output) =
+            Task.Run(fun () -> 
                 let commandArg = 
                     match framework with
                     | Some framework when Array.contains framework x.GetFramework ->
                         sprintf "--framework %s " framework
                     | _ ->
                         ""
-                let _ = cleanSolutionCommand x.Path x.Name commandArg outputLocal
-                x.Build(framework) (output)
-        member x.Clean(framework: string option) (output) =
-            let commandArg = 
-                match framework with
-                | Some framework when Array.contains framework x.GetFramework ->
-                    sprintf "--framework %s " framework
-                | _ ->
-                    ""
-            cleanSolutionCommand x.Path x.Name commandArg output
+                cleanSolutionCommand x.Path x.Name commandArg output
+            )
         member x.Run(framework: string option) = 
-            match x.RunningProject with 
-            | Some project -> 
-                project.Run(framework)
-            | None -> 
-                printf "not define"
-        member x.Publish(framework: string option) (output: Text.StringBuilder option) =
-            match x.CustomCommand with
-            | Some command when command.PublishCmd.IsSome ->
-                command.PublishCmd.Value.Execute output
-            | _ ->
-                let frameworkCmd, publishDir =
-                    match framework with
-                    | Some framework -> (sprintf "--framework %s" framework), Path.Combine(x.PublishDir, framework)
-                    | None -> "", x.PublishDir
-                if  not (System.IO.Directory.Exists(publishDir)) then
-                    System.IO.Directory.CreateDirectory publishDir |> ignore
-                ExecuteStreamOutput x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) None
-                ExecuteStreamOutput x.Path "explorer.exe" publishDir None |> ignore
+            Task.Run(fun () -> 
+                match x.RunningProject with 
+                | Some project -> 
+                    project.Run(framework)
+                | None -> 
+                    printf "not define"
+            )
+        member x.Publish(framework: string option) (output: Text.StringBuilder option) = 
+            Task.Run(fun () -> 
+                match x.CustomCommand with
+                | Some command when command.PublishCmd.IsSome ->
+                    command.PublishCmd.Value.Execute output
+                | _ ->
+                    let frameworkCmd, publishDir =
+                        match framework with
+                        | Some framework -> (sprintf "--framework %s" framework), Path.Combine(x.PublishDir, framework)
+                        | None -> "", x.PublishDir
+                    if  not (System.IO.Directory.Exists(publishDir)) then
+                        System.IO.Directory.CreateDirectory publishDir |> ignore
+                    ExecuteStreamOutput x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) None
+                    ExecuteStreamOutput x.Path "explorer.exe" publishDir None |> ignore
+            )
         override x.ToString() =
             let project =
                 match x.RunningProject with 
