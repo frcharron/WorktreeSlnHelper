@@ -15,6 +15,10 @@ using EnvDTE80;
 using System.IO;
 using Microsoft.IO;
 using Path = System.IO.Path;
+using Directory = System.IO.Directory;
+using System.Diagnostics.Tracing;
+using System.Security.AccessControl;
+using Microsoft.FSharp.Core;
 
 namespace SolutionsToolbar
 {
@@ -33,9 +37,10 @@ namespace SolutionsToolbar
                         || listSolutions == null 
                         || listSolutions.Length == 0 
                         || (DateTime.UtcNow - latestUpdate) > TimeSpan.FromMinutes(5)) {
-                    string codebase = typeof(SolutionsToolbarPackage).Assembly.CodeBase;
-                    var uri = new Uri(codebase, UriKind.Absolute);
-                    var fileAction = Path.Combine(Path.GetDirectoryName(uri.LocalPath), "CustomAction.json");
+                    var localAppDataConfig = Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA"), "VisualStudio", "SolutionToolbar");
+                    if(!Directory.Exists(localAppDataConfig))
+                           Directory.CreateDirectory(localAppDataConfig);
+                    var fileAction = Path.Combine(localAppDataConfig, "CustomAction.json");
                     var custom = RepositorySolutionScanner.Action.ParsingCustomSolutionFile(fileAction);
                     listSolutions = Scanner.StartScan(GitHelper.GetTopLevelDirectory(directoryRoot), custom);
                     latestUpdate = DateTime.UtcNow;
@@ -46,6 +51,7 @@ namespace SolutionsToolbar
         }
 
         private DTE dte;
+        private EnvDTE.OutputWindowPane solutionPane;
 
         private Solutions listSolutionFiles = new Solutions();
         private SolutionsInstance.Solution currentSelectedSolution = null;
@@ -109,8 +115,19 @@ namespace SolutionsToolbar
         /// <param name="commandService">Command service to add command to, not null.</param>
         private SolutionsCommands(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             this.dte = dte;
-
+            EnvDTE80.DTE2 dte2 = dte as EnvDTE80.DTE2;
+            try
+            {
+                this.solutionPane = dte2.ToolWindows.OutputWindow.OutputWindowPanes.Item("Solution Toolbar Activity");
+            }
+            catch (ArgumentException)
+            {
+                this.solutionPane = dte2.ToolWindows.OutputWindow.OutputWindowPanes.Add("Solution Toolbar Activity");
+            }
+            solutionPane.Clear();
+            solutionPane.Activate();
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
@@ -208,7 +225,8 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                object value = currentSelectedSolution.Build(currentSelectedFramework, null);
+                var writeLine = FuncConvert.FromAction<System.Diagnostics.DataReceivedEventArgs>(StandardOutReceived);
+                object value = currentSelectedSolution.Build(currentSelectedFramework, writeLine);
             }
         }
 
@@ -217,7 +235,8 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                object value = currentSelectedSolution.Rebuild(currentSelectedFramework, null);
+                var writeLine = FuncConvert.FromAction<System.Diagnostics.DataReceivedEventArgs>(StandardOutReceived);
+                object value = currentSelectedSolution.Rebuild(currentSelectedFramework, writeLine);
             }
         }
 
@@ -226,7 +245,8 @@ namespace SolutionsToolbar
             ThreadHelper.ThrowIfNotOnUIThread();
             if (currentSelectedSolution != null)
             {
-                object task = currentSelectedSolution.Publish(currentSelectedFramework, null);
+                var writeLine = FuncConvert.FromAction<System.Diagnostics.DataReceivedEventArgs>(StandardOutReceived);
+                object task = currentSelectedSolution.Publish(currentSelectedFramework, writeLine);
             }
         }
 
@@ -397,11 +417,6 @@ namespace SolutionsToolbar
             if (frameworkCB != null)
             {
                 frameworkCB.Visible = frameworkCB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.GetFramework.Length > 0);
-                if(!frameworkCB.Enabled)
-                {
-                    currentSelectedFramework = null;
-                    frameworkCB.Text = string.Empty;
-                }
             }
         }
 
@@ -413,6 +428,7 @@ namespace SolutionsToolbar
                 PublishB.Enabled = (currentSelectedSolution != null && currentSelectedSolution.CanPublish);
             }
         }
+        
         private void OnRunQueryStatus(object sender, EventArgs e)
         {
             OleMenuCommand RunB = sender as OleMenuCommand;
@@ -426,6 +442,7 @@ namespace SolutionsToolbar
                 }
             }
         }
+        
         private void OnBuildQueryStatus(object sender, EventArgs e)
         {
             OleMenuCommand BuildB = sender as OleMenuCommand;
@@ -439,6 +456,7 @@ namespace SolutionsToolbar
                 }
             }
         }
+        
         private void OnRebuildQueryStatus(object sender, EventArgs e)
         {
             OleMenuCommand RebuildB = sender as OleMenuCommand;
@@ -451,6 +469,19 @@ namespace SolutionsToolbar
                     RebuildB.Text = string.Empty;
                 }
             }
+        }
+
+        private async Task AddOutputStringAsync(string outputString) {
+            if (!string.IsNullOrEmpty(outputString))
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(this.package.DisposalToken);
+                solutionPane.OutputString(outputString);
+                solutionPane.OutputString("\n");
+            }
+        }
+        
+        private void StandardOutReceived(System.Diagnostics.DataReceivedEventArgs e) {
+            object task = package.JoinableTaskFactory.RunAsync(() => AddOutputStringAsync(e.Data));
         }
     }
 }

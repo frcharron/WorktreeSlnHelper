@@ -66,12 +66,12 @@ module SolutionsInstance =
                 None
 
     let cleanSolutionCommand path name arg out = 
-        ExecuteStreamOutput path "dotnet" (sprintf "build %s.sln %s" name arg) out
+        Execute path "dotnet" (sprintf "build %s.sln %s" name arg) out
 
     let build path name framework listFramework customCmd output =
         match customCmd with
         | Some command when command.BuildCmd.IsSome ->
-            command.BuildCmd.Value.Execute output
+            command.BuildCmd.Value.Execute None
         | _ ->
             let commandArg = 
                 match framework with
@@ -79,7 +79,7 @@ module SolutionsInstance =
                     sprintf "--framework %s " framework
                 | _ ->
                     ""
-            ExecuteStreamOutput path "dotnet" (sprintf "build %s.sln %s-c Debug --force" name commandArg) output
+            Execute path "dotnet" (sprintf "build %s.sln %s-c Debug --force" name commandArg) output
 
     type Solution = {
         Guid : string
@@ -103,15 +103,15 @@ module SolutionsInstance =
         member x.Open() =
             ExecuteStreamOutput x.Path x.GetFilePath "" None
 
-        member x.Build(framework: string option) (output: Text.StringBuilder option) =
+        member x.Build(framework: string option) (output) =
             Task.Run(fun () -> 
                 build x.Path x.Name framework x.GetFramework x.CustomCommand output
             )
-        member x.Rebuild(framework: string option) (output: Text.StringBuilder option) =
+        member x.Rebuild(framework: string option) (output) =
             Task.Run(fun () -> 
                 match x.CustomCommand with
                 | Some command when command.RebuildCmd.IsSome ->
-                    command.RebuildCmd.Value.Execute output
+                    command.RebuildCmd.Value.Execute None
                 | _ ->
                     let outputLocal = new Text.StringBuilder() |> Some //That will block the command until completed
                     let commandArg = 
@@ -120,7 +120,6 @@ module SolutionsInstance =
                             sprintf "--framework %s " framework
                         | _ ->
                             ""
-                    let _ = cleanSolutionCommand x.Path x.Name commandArg outputLocal
                     cleanSolutionCommand x.Path x.Name commandArg output
                     build x.Path x.Name framework x.GetFramework x.CustomCommand output
             )
@@ -142,11 +141,11 @@ module SolutionsInstance =
                 | None -> 
                     printf "not define"
             )
-        member x.Publish(framework: string option) (output: Text.StringBuilder option) = 
+        member x.Publish(framework: string option) (output) = 
             Task.Run(fun () -> 
                 match x.CustomCommand with
                 | Some command when command.PublishCmd.IsSome ->
-                    command.PublishCmd.Value.Execute output
+                    command.PublishCmd.Value.Execute None
                 | _ ->
                     let frameworkCmd, publishDir =
                         match framework with
@@ -154,8 +153,8 @@ module SolutionsInstance =
                         | None -> "", x.PublishDir
                     if  not (System.IO.Directory.Exists(publishDir)) then
                         System.IO.Directory.CreateDirectory publishDir |> ignore
-                    ExecuteStreamOutput x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) None
-                    ExecuteStreamOutput x.Path "explorer.exe" publishDir None |> ignore
+                    Execute x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) output
+                    Execute x.Path "explorer.exe" publishDir output |> ignore
             )
         override x.ToString() =
             let project =
