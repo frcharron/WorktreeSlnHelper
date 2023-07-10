@@ -95,7 +95,10 @@
     <Content Include="Resources\PublishSolutionCommand.png" />
     <Content Include="Resources\RebuildSolutionCommand.png" />
     <Content Include="Resources\RunSolutionCommand.png" />
-    <Content Include="Resources\SolutionFileSelectCommand.png" />
+    <Content Include="Resources\SolutionFileSelectCommand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

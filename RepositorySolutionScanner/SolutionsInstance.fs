@@ -10,6 +10,7 @@ module SolutionsInstance =
     type Project = {
         Name : string
         OutputPath : string
+        ProjectFilePath : string
         Framework : string array
         CustomCommand : Action.ProjectAct option
     }
@@ -32,6 +33,7 @@ module SolutionsInstance =
             {
                 Name = ""
                 OutputPath = ""
+                ProjectFilePath = ""
                 Framework = Array.empty
                 CustomCommand = None
             }
@@ -60,26 +62,11 @@ module SolutionsInstance =
                             parsing fileStream project
                 parsing fileStream {Project.Default with 
                                         OutputPath = Path.Combine(Path.GetDirectoryName(filename), "bin", "Debug")
+                                        ProjectFilePath = filename
                                         CustomCommand = command
                                     }
             with _ ->
                 None
-
-    let cleanSolutionCommand path name arg out = 
-        Execute path "dotnet" (sprintf "build %s.sln %s" name arg) out
-
-    let build path name framework listFramework customCmd output =
-        match customCmd with
-        | Some command when command.BuildCmd.IsSome ->
-            command.BuildCmd.Value.Execute None
-        | _ ->
-            let commandArg = 
-                match framework with
-                | Some framework when Array.contains framework listFramework ->
-                    sprintf "--framework %s " framework
-                | _ ->
-                    ""
-            Execute path "dotnet" (sprintf "build %s.sln %s-c Debug --force" name commandArg) output
 
     type Solution = {
         Guid : string
@@ -105,7 +92,16 @@ module SolutionsInstance =
 
         member x.Build(framework: string option) (output) =
             Task.Run(fun () -> 
-                build x.Path x.Name framework x.GetFramework x.CustomCommand output
+                match x.CustomCommand with
+                | Some command when command.BuildCmd.IsSome ->
+                    command.BuildCmd.Value.Execute None
+                | _ ->
+                    match (framework, x.RunningProject) with
+                    | (Some framework, Some project) when Array.contains framework x.GetFramework ->
+                        //sprintf "--framework %s " framework
+                        Execute x.Path "dotnet" (sprintf "build %s --framework %s -c Debug" project.ProjectFilePath framework) output
+                    | _ ->
+                        Execute x.Path "dotnet" (sprintf "build %s.sln -c Debug" x.Name) output
             )
         member x.Rebuild(framework: string option) (output) =
             Task.Run(fun () -> 
@@ -113,15 +109,12 @@ module SolutionsInstance =
                 | Some command when command.RebuildCmd.IsSome ->
                     command.RebuildCmd.Value.Execute None
                 | _ ->
-                    let outputLocal = new Text.StringBuilder() |> Some //That will block the command until completed
-                    let commandArg = 
-                        match framework with
-                        | Some framework when Array.contains framework x.GetFramework ->
-                            sprintf "--framework %s " framework
-                        | _ ->
-                            ""
-                    cleanSolutionCommand x.Path x.Name commandArg output
-                    build x.Path x.Name framework x.GetFramework x.CustomCommand output
+                    match (framework, x.RunningProject) with
+                    | (Some framework, Some project) when Array.contains framework x.GetFramework ->
+                        //sprintf "--framework %s " framework
+                        Execute x.Path "dotnet" (sprintf "build %s --framework %s -c Debug --no-incremental" project.ProjectFilePath framework) output
+                    | _ ->
+                        Execute x.Path "dotnet" (sprintf "build %s.sln -c Debug --no-incremental" x.Name) output
             )
         member x.Clean(framework: string option) (output) =
             Task.Run(fun () -> 
@@ -131,7 +124,7 @@ module SolutionsInstance =
                         sprintf "--framework %s " framework
                     | _ ->
                         ""
-                cleanSolutionCommand x.Path x.Name commandArg output
+                Execute x.Path "dotnet" (sprintf "build %s.sln %s" x.Name commandArg) output
             )
         member x.Run(framework: string option) = 
             Task.Run(fun () -> 
@@ -147,13 +140,15 @@ module SolutionsInstance =
                 | Some command when command.PublishCmd.IsSome ->
                     command.PublishCmd.Value.Execute None
                 | _ ->
-                    let frameworkCmd, publishDir =
+                    let publishDir =
                         match framework with
-                        | Some framework -> (sprintf "--framework %s" framework), Path.Combine(x.PublishDir, framework)
-                        | None -> "", x.PublishDir
-                    if  not (System.IO.Directory.Exists(publishDir)) then
-                        System.IO.Directory.CreateDirectory publishDir |> ignore
-                    Execute x.Path "dotnet" (sprintf "publish %s.sln -c Release --force --output %s %s" x.Name publishDir frameworkCmd) output
+                        | Some framework -> Path.Combine(x.PublishDir, framework)
+                        | None -> x.PublishDir
+                    match (framework, x.RunningProject) with
+                    | (Some framework, Some project) when Array.contains framework x.GetFramework ->
+                        Execute x.Path "dotnet" (sprintf "publish %s --framework %s -c publish  --output %s" project.ProjectFilePath framework publishDir) output
+                    | _ ->
+                        Execute x.Path "dotnet" (sprintf "publish %s.sln -c publish  --output %s" x.Name publishDir) output
                     Execute x.Path "explorer.exe" publishDir output |> ignore
             )
         override x.ToString() =
