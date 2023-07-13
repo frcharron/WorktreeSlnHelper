@@ -108,6 +108,8 @@
 			  <Parent guid="guidSolutionsToolbarPackageCmdSet" id="ToolbarGroup" />
 			  <CommandFlag>IconAndText</CommandFlag>
 			  <CommandFlag>CommandWellOnly</CommandFlag>
+			  <CommandFlag>DynamicVisibility</CommandFlag>
+			  <CommandFlag>DefaultInvisible</CommandFlag>
 			  <Strings>
 				  <ButtonText></ButtonText>
 			  </Strings>

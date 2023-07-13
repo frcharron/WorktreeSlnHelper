@@ -37,7 +37,7 @@ namespace SolutionsToolbar
                         || listSolutions == null 
                         || listSolutions.Length == 0 
                         || (DateTime.UtcNow - latestUpdate) > TimeSpan.FromMinutes(5)) {
-                    var localAppDataConfig = Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA"), "VisualStudio", "SolutionToolbar");
+                    var localAppDataConfig = Path.Combine(Environment.GetEnvironmentVariable("LOCALAPPDATA"), "Microsoft", "VisualStudio", "SolutionToolbar");
                     if(!Directory.Exists(localAppDataConfig))
                            Directory.CreateDirectory(localAppDataConfig);
                     var fileAction = Path.Combine(localAppDataConfig, "CustomAction.json");
