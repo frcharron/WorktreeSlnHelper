@@ -23,57 +23,16 @@ using Image = System.Drawing.Image;
 
 namespace TopLevelMenu
 {
-    public class SolutionFiles
-    {
-        public ObservableCollection<SolutionFile> items = new ObservableCollection<SolutionFile>();
-        public class SolutionFile
-        {
-            public string Name { get; set; }
-            public string Filename { get { return this.Name + "." + this.FileType; } }
-            public string Path { get; set; }
-            public string FileType { get; set; }
-            public bool? IsCanBuild { get; set; }
-            public bool? IsCanRun { get; set; }
-            public override string ToString() { if (this.Name != null) return System.IO.Path.GetFileNameWithoutExtension(this.Name); else return ""; }
-        }
-
-        public void LoadFiles()
-        {
-            items.Add(new SolutionFile()
-            {
-                Name = "Evil Solution",
-                Path = "C://SecretFiles//Nothing...",
-                FileType = "SLN",
-                IsCanBuild = true,
-                IsCanRun = false
-            }
-            );
-            items.Add(new SolutionFile()
-            {
-                Name = "Most Evil Solution",
-                Path = "C://SecretFiles//Nothing...",
-                FileType = "SLN",
-                IsCanBuild = true,
-                IsCanRun = false
-            }
-            );
-            items.Add(new SolutionFile()
-            {
-                Name = "Good Solution",
-                Path = "C://SecretFiles//Nothing...",
-                FileType = "SLN",
-                IsCanBuild = true,
-                IsCanRun = false
-            }
-            );
-        }
-    }
     /// <summary>
     /// Interaction logic for DialogOpenSolution.xaml
     /// </summary>
     public partial class DialogOpenSolution : System.Windows.Controls.UserControl
     {
+        private SolutionFile file;
         public Form form = null;
+        public SolutionFile File {
+            get {return this.file;} 
+        }
         public DialogOpenSolution()
         {
             InitializeComponent();
@@ -88,6 +47,12 @@ namespace TopLevelMenu
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            form.Close();
+        }
+
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            file = SolutionList.SelectedItem as SolutionFile;
             form.Close();
         }
     }

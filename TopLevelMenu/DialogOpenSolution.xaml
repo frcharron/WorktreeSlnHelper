@@ -105,7 +105,7 @@
         <StackPanel Orientation="Horizontal" Margin="0,5,0,5" HorizontalAlignment="Left" Width="800">
             <DockPanel Width="800">
                 <Button Name="Cancel" Style="{StaticResource Flat}" Content="Cancel" DockPanel.Dock="Right" Click="CloseButton_Click" IsCancel="True"/>
-                <Button Style="{StaticResource OpenButton}"  Content="Open" DockPanel.Dock="Right"/>
+                <Button Style="{StaticResource OpenButton}"  Content="Open" DockPanel.Dock="Right" Click="OpenButton_Click"/>
                 <Border></Border>
             </DockPanel>
         </StackPanel>

@@ -49,9 +49,7 @@
     <Compile Include="DialogOpenSolution.xaml.cs">
       <DependentUpon>DialogOpenSolution.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OpenSession.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="OpenSession.cs" />
     <Compile Include="OpenSession.Designer.cs">
       <DependentUpon>OpenSession.cs</DependentUpon>
     </Compile>

@@ -23,6 +23,7 @@ namespace TopLevelMenu
     /// </summary>
     internal sealed class TestCommand
     {
+        private DTE dte;
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -45,8 +46,10 @@ namespace TopLevelMenu
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private TestCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private TestCommand(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
         {
+            this.dte = dte;
+
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
@@ -92,49 +95,7 @@ namespace TopLevelMenu
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new TestCommand(package, commandService);
-        }
-
-        public static DialogResult ShowMe(string title, string promptText, ref string value)
-        {
-            //'value' is to return Some value
-            Form form = new Form();
-            //Label label = new Label();
-            //ListView lv = new ListView();
-
-            //form.Text = title;
-            //label.Text = promptText;
-
-            //label.SetBounds(9, 20, 600, 24);
-            //label.ForeColor = Color.White;
-            //label.Font = new Font("Calibri Light", 24, FontStyle.Regular);
-            //label.BackColor = System.Drawing.Color.Transparent;
-            //lv.SetBounds(9, 100, 600, 300);
-            //lv.BackColor = System.Drawing.Color.DarkGray;
-
-            //lv.Items.Add("bob");
-
-            //label.AutoSize = true;
-
-            //form.ClientSize = new Size(800, 451);
-            //form.Controls.AddRange(new Control[] { label, lv });
-            //form.FormBorderStyle = FormBorderStyle.FixedDialog;
-            //form.StartPosition = FormStartPosition.CenterScreen;
-            //form.MinimizeBox = false;
-            //form.MaximizeBox = false;
-            //var assembly = Assembly.GetExecutingAssembly();
-            //var resourceName = assembly.GetManifestResourceNames().Single(x => x.Contains("wp6734564.png"));
-            //using (var stream = assembly.GetManifestResourceStream(resourceName))
-            //{
-            //    if (stream != null)
-            //    {
-            //        form.BackgroundImage = Image.FromStream(stream);
-            //        form.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            //    }
-            //}
-
-            DialogResult dialogResult = form.ShowDialog();
-            return dialogResult;
+            Instance = new TestCommand(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
         }
 
         /// <summary>
@@ -208,8 +169,7 @@ namespace TopLevelMenu
             for (int i = 0; i < this.numMRUItems; i++)
             {
                 var cmdID = new CommandID(CommandSet, this.baseMRUID + i);
-                var mc = new OleMenuCommand(
-                    new EventHandler(OnMRUExec), cmdID);
+                var mc = new OleMenuCommand(new EventHandler(OnMRUExec), cmdID);
                 mc.BeforeQueryStatus += new EventHandler(OnMRUQueryStatus);
                 mcs.AddCommand(mc);
             }
@@ -230,6 +190,7 @@ namespace TopLevelMenu
 
         private void OnMRUExec(object sender, EventArgs e)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             var menuCommand = sender as OleMenuCommand;
             if (null != menuCommand)
             {
@@ -242,9 +203,14 @@ namespace TopLevelMenu
                         this.mruList[i] = this.mruList[i - 1];
                     }
                     this.mruList[0] = selection;
-                    string value = string.Empty;
-                    Form form = new OpenSession("master", "C:\\git\\Genetec.Softwire_master");
+                    OpenSession form = new OpenSession(selection, "C:\\git\\Genetec.Softwire_master");
                     form.ShowDialog();
+                    var file = form.GetSelectedSolution();
+                    if (file != null)
+                    {
+                        EnvDTE80.DTE2 dte2 = dte as EnvDTE80.DTE2;
+                        dte2.Solution.Open(file.Path);
+                    }
                 }
             }
         }
