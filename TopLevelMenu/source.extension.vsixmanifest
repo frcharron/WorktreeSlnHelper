@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="WorktreeMenu.6f95a998-3b89-497e-9dcd-54bf6d7cd967" Version="0.1" Language="en-US" Publisher="Genetec" />
-        <DisplayName>WorktreeMenu</DisplayName>
+        <Identity Id="TopLevelMenu.4b3ae97e-2bd0-49ee-9e60-38b2f1fd2970" Version="0.2" Language="en-US" Publisher="Genetec" />
+        <DisplayName>Worktree management helper</DisplayName>
         <Description xml:space="preserve">Empty VSIX Project.</Description>
+        <Preview>true</Preview>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">

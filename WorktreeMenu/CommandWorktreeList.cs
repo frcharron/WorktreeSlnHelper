@@ -13,17 +13,19 @@ namespace WorktreeMenu
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class cmdidMRUList
+    internal sealed class CommandWorktreeList
     {
         /// <summary>
         /// Command ID.
         /// </summary>
         public const int CommandId = 0x0200;
+        public const uint cmdidMRUList = 0x200;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("79b4d408-7f8c-4fe8-a0f5-2486657dc6cd");
+        public const string guidTestCommandPackageCmdSet = "256e5347-7680-497b-a9f3-74b15dc81a42";
+        public static readonly Guid CommandSet = new Guid(guidTestCommandPackageCmdSet);
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -50,12 +52,12 @@ namespace WorktreeMenu
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="cmdidMRUList"/> class.
+        /// Initializes a new instance of the <see cref="CommandWorktreeList"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private cmdidMRUList(AsyncPackage package, OleMenuCommandService commandService)
+        private CommandWorktreeList(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -64,16 +66,50 @@ namespace WorktreeMenu
             for (int i = 0; i < this.numMRUItems; i++)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId + i);
-                var menuItem = new MenuCommand(this.Execute, menuCommandID);
+                var menuItem = new OleMenuCommand(new EventHandler(OnMRUExec), menuCommandID);
+                menuItem.BeforeQueryStatus += new EventHandler(OnMRUQueryStatus);
                 commandService.AddCommand(menuItem);
             }
         }
 
+        private void OnMRUQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand menuCommand = sender as OleMenuCommand;
+            if (null != menuCommand)
+            {
+                int MRUItemIndex = menuCommand.CommandID.ID - CommandId;
+                if (MRUItemIndex >= 0 && MRUItemIndex < this.mruList.Count)
+                {
+                    menuCommand.Text = this.mruList[MRUItemIndex] as string;
+                }
+            }
+        }
+
+        private void OnMRUExec(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (null != menuCommand)
+            {
+                int MRUItemIndex = menuCommand.CommandID.ID - CommandId;
+                if (MRUItemIndex >= 0 && MRUItemIndex < this.mruList.Count)
+                {
+                    string selection = this.mruList[MRUItemIndex] as string;
+                    for (int i = MRUItemIndex; i > 0; i--)
+                    {
+                        this.mruList[i] = this.mruList[i - 1];
+                    }
+                    this.mruList[0] = selection;
+                    System.Windows.Forms.MessageBox.Show(
+                        string.Format(CultureInfo.CurrentCulture,
+                                      "Selected {0}", selection));
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static cmdidMRUList Instance
+        public static CommandWorktreeList Instance
         {
             get;
             private set;
@@ -101,7 +137,13 @@ namespace WorktreeMenu
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new cmdidMRUList(package, commandService);
+            Instance = new CommandWorktreeList(package, commandService);
+        }
+
+        public static async Task Initialize(Package package)
+        {
+            OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+            Instance = new CommandWorktreeList(package, commandService);
         }
 
         /// <summary>

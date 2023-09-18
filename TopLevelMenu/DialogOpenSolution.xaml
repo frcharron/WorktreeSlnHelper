@@ -1,0 +1,113 @@
+﻿<UserControl x:Class="TopLevelMenu.DialogOpenSolution"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TopLevelMenu"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="Black">
+    <UserControl.Resources>
+        <BitmapImage x:Key="GIT" UriSource="/Resources/git.png" />
+        <BitmapImage x:Key="SLN" UriSource="/Resources/sln.png" />
+        <Style x:Key="Flat">
+            <Setter Property="Control.Background" Value="{x:Null}" />
+            <Setter Property="Control.BorderBrush" Value="purple" />
+            <Setter Property="Control.Foreground" Value="white" />
+            <Setter Property="Control.Width" Value="100" />
+            <Setter Property="ItemsControl.Height" Value="35" />
+            <Setter Property="ItemsControl.Margin" Value="5,5,5,5" />
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.Background" Value="purple" />
+                    <Setter Property="Control.BorderBrush" Value="{x:Null}" />
+                    <Setter Property="Control.Foreground" Value="white" />
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+                <Trigger Property="Control.IsFocused" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="OpenButton" BasedOn="{StaticResource Flat}" TargetType="Button">
+            <Setter Property="IsEnabled" Value="False"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=SolutionList, Path=SelectedItems.Count}" Value="1">
+                    <Setter Property="IsEnabled" Value="true"/>
+                </DataTrigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Background" Value="DarkGray"/>
+                    <Setter Property="Foreground" Value="Gray"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical" Margin="0,5,0,5" HorizontalAlignment="Center" Width="800">
+        <DockPanel Width="800">
+            <Image Source="{StaticResource GIT}" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
+            <Label Name="WorktreeName" Foreground="White" FontSize="18" Content="Loading..." VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            <Border></Border>
+        </DockPanel>
+        <ListView x:Name="SolutionList" 
+                  SelectionMode="Single" 
+                  Height="335" 
+                  Width="800" 
+                  Visibility="Visible"
+                  HorizontalContentAlignment="Center">
+            <ListView.Style>
+                <Style TargetType="ListView">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListView}">
+                                <Grid>
+                                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" 
+                                                    BorderThickness="{TemplateBinding BorderThickness}" 
+                                                    Background="{TemplateBinding Background}" Padding="1"
+                                                    SnapsToDevicePixels="true"
+                                                    Opacity="0.1">
+                                    </Border>
+                                    <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" Margin="{TemplateBinding BorderThickness}">
+                                        <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.Style>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Foreground" Value="white" />
+                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ListViewItem_PreviewMouseLeftButtonUp" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="Purple" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="Purple" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel Width="773">
+                        <Image Source="{StaticResource SLN}" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
+                        <StackPanel Orientation="Vertical" Margin="5">
+                            <TextBlock Text="{Binding Name}" FontSize="18"/>
+                            <TextBlock Text="{Binding Path}" FontSize="12"/>
+                        </StackPanel>
+                        <Border></Border>
+                    </DockPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackPanel Orientation="Horizontal" Margin="0,5,0,5" HorizontalAlignment="Left" Width="800">
+            <DockPanel Width="800">
+                <Button Name="Cancel" Style="{StaticResource Flat}" Content="Cancel" DockPanel.Dock="Right" Click="CloseButton_Click" IsCancel="True"/>
+                <Button Style="{StaticResource OpenButton}"  Content="Open" DockPanel.Dock="Right"/>
+                <Border></Border>
+            </DockPanel>
+        </StackPanel>
+    </StackPanel> 
+</UserControl>

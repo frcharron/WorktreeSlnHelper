@@ -9,7 +9,7 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RepositorySolutionScanner",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionsToolbar", "SolutionsToolbar\SolutionsToolbar.csproj", "{52A1BD34-FBE3-4000-999D-A4ED553C8985}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorktreeMenu", "WorktreeMenu\WorktreeMenu.csproj", "{6FFCA931-8736-44BD-A8DD-C87C773D178C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopLevelMenu", "TopLevelMenu\TopLevelMenu.csproj", "{FF9059CB-C57A-4565-AE87-2B1D25CCD835}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,18 +57,18 @@ Global
 		{52A1BD34-FBE3-4000-999D-A4ED553C8985}.Release|arm64.Build.0 = Release|arm64
 		{52A1BD34-FBE3-4000-999D-A4ED553C8985}.Release|x86.ActiveCfg = Release|x86
 		{52A1BD34-FBE3-4000-999D-A4ED553C8985}.Release|x86.Build.0 = Release|x86
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Debug|arm64.ActiveCfg = Debug|arm64
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Debug|arm64.Build.0 = Debug|arm64
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Debug|x86.ActiveCfg = Debug|x86
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Debug|x86.Build.0 = Debug|x86
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Release|arm64.ActiveCfg = Release|arm64
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Release|arm64.Build.0 = Release|arm64
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Release|x86.ActiveCfg = Release|x86
-		{6FFCA931-8736-44BD-A8DD-C87C773D178C}.Release|x86.Build.0 = Release|x86
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Debug|arm64.ActiveCfg = Debug|arm64
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Debug|arm64.Build.0 = Debug|arm64
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Debug|x86.ActiveCfg = Debug|x86
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Debug|x86.Build.0 = Debug|x86
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Release|arm64.ActiveCfg = Release|arm64
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Release|arm64.Build.0 = Release|arm64
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Release|x86.ActiveCfg = Release|x86
+		{FF9059CB-C57A-4565-AE87-2B1D25CCD835}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
