@@ -203,13 +203,17 @@ namespace TopLevelMenu
                         this.mruList[i] = this.mruList[i - 1];
                     }
                     this.mruList[0] = selection;
-                    OpenSession form = new OpenSession(selection, "C:\\git\\Genetec.Softwire_master");
-                    form.ShowDialog();
-                    var file = form.GetSelectedSolution();
-                    if (file != null)
+                    using (OpenSession form = new OpenSession(selection, "C:\\git\\Genetec.Softwire_master"))
                     {
-                        EnvDTE80.DTE2 dte2 = dte as EnvDTE80.DTE2;
-                        dte2.Solution.Open(file.Path);
+                        form.ShowDialog();
+                        var file = form.GetSelectedSolution();
+                        if (file != null)
+                        {
+                            EnvDTE80.DTE2 dte2 = dte as EnvDTE80.DTE2;
+                            if (dte2.Solution.IsOpen)
+                                dte2.Solution.Close(true);
+                            dte2.Solution.Open(file.Path);
+                        }
                     }
                 }
             }
