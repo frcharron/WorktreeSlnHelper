@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using RepositorySolutionScanner;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -24,6 +25,8 @@ namespace TopLevelMenu
     internal sealed class TestCommand
     {
         private DTE dte;
+        private readonly RepositorySolutionScanner.Action.CustonSolutionAction action;
+        private RepositoryInstance.Repository[] repositories;
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -49,7 +52,7 @@ namespace TopLevelMenu
         private TestCommand(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
         {
             this.dte = dte;
-
+            this.action = RepositorySolutionScanner.Action.ParsingCustomSolutionFile("CustomAction.json");
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
@@ -143,30 +146,31 @@ namespace TopLevelMenu
                 out result);
         }
 
-        private int numMRUItems = 4;
         private int baseMRUID = (int)TopLevelMenuPackage.cmdidMRUList;
         private ArrayList mruList;
-
-        private void InitializeMRUList()
+        private void InitMRUMenu(OleMenuCommandService mcs)
         {
-            if (null == this.mruList)
+            repositories = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);
+            if (repositories != null)
             {
                 this.mruList = new ArrayList();
                 if (null != this.mruList)
                 {
-                    for (int i = 0; i < this.numMRUItems; i++)
+                    foreach (var repository in repositories)
                     {
-                        this.mruList.Add(string.Format(CultureInfo.CurrentCulture,
-                            "Item {0}", i + 1));
+                        if (repository.GitAttributs.IsWorktree)
+                        {
+                            var parent = repository.RepositoryPath;
+                            if (parent != null)
+                            {
+
+                            }
+                            this.mruList.Add(string.Format(CultureInfo.CurrentCulture, repository.RepositoryName));
+                        }
                     }
                 }
             }
-        }
-
-        private void InitMRUMenu(OleMenuCommandService mcs)
-        {
-            InitializeMRUList();
-            for (int i = 0; i < this.numMRUItems; i++)
+            for (int i = 0; i < this.mruList.Count; i++)
             {
                 var cmdID = new CommandID(CommandSet, this.baseMRUID + i);
                 var mc = new OleMenuCommand(new EventHandler(OnMRUExec), cmdID);
@@ -203,16 +207,19 @@ namespace TopLevelMenu
                         this.mruList[i] = this.mruList[i - 1];
                     }
                     this.mruList[0] = selection;
-                    using (OpenSession form = new OpenSession(selection, "C:\\git\\Genetec.Softwire_master"))
-                    {
-                        form.ShowDialog();
-                        var file = form.GetSelectedSolution();
-                        if (file != null)
+                    var repository = Array.Find(repositories, repo => repo.RepositoryName.Equals(selection) );
+                    if (repository != null) {
+                        using (OpenSession form = new OpenSession(selection, repository.Solutions))
                         {
-                            EnvDTE80.DTE2 dte2 = dte as EnvDTE80.DTE2;
-                            if (dte2.Solution.IsOpen)
-                                dte2.Solution.Close(true);
-                            dte2.Solution.Open(file.Path);
+                            form.ShowDialog();
+                            var file = form.GetSelectedSolution();
+                            if (file != null)
+                            {
+                                EnvDTE80.DTE2 dte2 = dte as EnvDTE80.DTE2;
+                                if (dte2.Solution.IsOpen)
+                                    dte2.Solution.Close(true);
+                                dte2.Solution.Open(Path.Combine(file.Path, file.Name + file.FileType));
+                            }
                         }
                     }
                 }

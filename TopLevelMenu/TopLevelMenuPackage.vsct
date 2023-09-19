@@ -36,11 +36,11 @@
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
 	  <Menus>
-		  <Menu guid="guidTopLevelMenuPackageCmdSet" id="TopLevelMenu" priority="0x700" type="Menu">
+		  <Menu guid="guidTopLevelMenuPackageCmdSet" id="TopLevelMenu" priority="0x197" type="Menu">
 			  <Parent guid="guidSHLMainMenu"
 					  id="IDG_VS_FILE_FILE" />
 			  <Strings>
-				  <ButtonText>Worktrees</ButtonText>
+				  <ButtonText>Open Worktrees</ButtonText>
 			  </Strings>
 		  </Menu>
 	  </Menus>
@@ -65,8 +65,8 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidTopLevelMenuPackageCmdSet" id="TestCommandId" priority="0x0100" type="Button">
-        <Parent guid="guidTopLevelMenuPackageCmdSet" id="MyMenuGroup" />
+      <Button guid="guidTopLevelMenuPackageCmdSet" id="TestCommandId" priority="0x0199" type="Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_FILE_FILE" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <ButtonText>Create Worktree</ButtonText>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositorySolutionScanner;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -29,47 +30,29 @@ namespace TopLevelMenu
             public override string ToString() { if (this.Name != null) return System.IO.Path.GetFileNameWithoutExtension(this.Name); else return ""; }
         }
 
-        public void LoadFiles()
+        public void LoadFiles(SolutionsInstance.Solution[] solutions)
         {
-            items.Add(new SolutionFile()
+            foreach (var solution in solutions)
             {
-                Name = "Evil Solution",
-                Path = "C://SecretFiles//Nothing...",
-                FileType = "SLN",
-                IsCanBuild = true,
-                IsCanRun = false
+                items.Add(new SolutionFile()
+                {
+                    Name = solution.Name,
+                    Path = solution.Path,
+                    FileType = ".sln",
+                    IsCanBuild = false,
+                    IsCanRun = false
+                });
             }
-            );
-            items.Add(new SolutionFile()
-            {
-                Name = "Most Evil Solution",
-                Path = "C://SecretFiles//Nothing...",
-                FileType = "SLN",
-                IsCanBuild = true,
-                IsCanRun = false
-            }
-            );
-            items.Add(new SolutionFile()
-            {
-                Name = "Good Solution",
-                Path = "C://SecretFiles//Nothing...",
-                FileType = "SLN",
-                IsCanBuild = true,
-                IsCanRun = false
-            }
-            );
         }
     }
     public partial class OpenSession : Form
     {
-        private string m_LocalRepositoryPath;
-        public OpenSession(string worktreeDescription, string localRepositoryPath)
+        public OpenSession(string worktreeDescription, SolutionsInstance.Solution[] solution)
         {
-            m_LocalRepositoryPath = localRepositoryPath;
             InitializeComponent();
             dialogOpenSolution1.form = this;
             var files = new SolutionFiles();
-            files.LoadFiles();
+            files.LoadFiles(solution);
             dialogOpenSolution1.ShowItems(files.items);
             dialogOpenSolution1.WorktreeName.Content = worktreeDescription;
         }

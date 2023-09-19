@@ -53,7 +53,8 @@
                   Height="335" 
                   Width="800" 
                   Visibility="Visible"
-                  HorizontalContentAlignment="Center">
+                  HorizontalContentAlignment="Center"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.Style>
                 <Style TargetType="ListView">
                     <Setter Property="Template">

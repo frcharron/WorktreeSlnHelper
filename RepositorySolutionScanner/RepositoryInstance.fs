@@ -31,3 +31,6 @@ module RepositoryInstance =
                 | GitHelper.GitDirectory.Worktree _ -> true
                 | GitHelper.GitDirectory.NotAGitRespository -> false
             )
+        static member TryFind (repositories : Repository array) (repositoryName : string) =
+            repositories
+            |> Array.tryFind (fun repo -> repo.RepositoryName.Equals repositoryName)

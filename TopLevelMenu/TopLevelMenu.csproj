@@ -101,9 +101,8 @@
     <EmbeddedResource Include="Resources\sln.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="RepositorySolutionScanner.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
+    <Content Include="..\RepositorySolutionScanner\bin\Debug\net472\RepositorySolutionScanner.dll">
+      <Link>RepositorySolutionScanner.dll</Link>
     </Content>
     <Content Include="Resources\TestCommand.png" />
     <EmbeddedResource Include="OpenSession.resx">
