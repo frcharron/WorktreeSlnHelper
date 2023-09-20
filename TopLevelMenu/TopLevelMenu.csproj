@@ -46,6 +46,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CreateWorktree.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CreateWorktree.Designer.cs">
+      <DependentUpon>CreateWorktree.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DialogCreateWorktree.xaml.cs">
+      <DependentUpon>DialogCreateWorktree.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DialogOpenSolution.xaml.cs">
       <DependentUpon>DialogOpenSolution.xaml</DependentUpon>
     </Compile>
@@ -95,6 +104,9 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CreateWorktree.resx">
+      <DependentUpon>CreateWorktree.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Git.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -113,6 +125,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="DialogCreateWorktree.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DialogOpenSolution.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

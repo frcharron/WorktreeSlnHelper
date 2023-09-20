@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text;
 using RepositorySolutionScanner;
 using System;
 using System.Collections;
@@ -15,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using static Microsoft.VisualStudio.VSConstants;
 using Task = System.Threading.Tasks.Task;
 
 namespace TopLevelMenu
@@ -27,6 +29,8 @@ namespace TopLevelMenu
         private DTE dte;
         private readonly RepositorySolutionScanner.Action.CustonSolutionAction action;
         private RepositoryInstance.Repository[] repositories;
+        private readonly OleMenuCommandService cmdService;
+        private ArrayList wtMenues;
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -54,17 +58,24 @@ namespace TopLevelMenu
             this.dte = dte;
             this.action = RepositorySolutionScanner.Action.ParsingCustomSolutionFile("CustomAction.json");
             this.package = package ?? throw new ArgumentNullException(nameof(package));
-            commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+            this.cmdService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+
+            this.wtMenues = new ArrayList();
+            this.mruList = new ArrayList();
 
             var menuCommandID = new CommandID(CommandSet, CommandId);
             var menuItem = new MenuCommand(this.Execute, menuCommandID);
-            commandService.AddCommand(menuItem);
+            cmdService.AddCommand(menuItem);
 
             CommandID subCommandID = new CommandID(CommandSet, cmdidTestSubCmd);
             MenuCommand subItem = new MenuCommand(new EventHandler(SubItemCallback), subCommandID);
-            commandService.AddCommand(subItem);
+            cmdService.AddCommand(subItem);
 
-            this.InitMRUMenu(commandService);
+            RefreshWorktreeCommandService();
+        }
+
+        private void RefreshWorktreeCommandService() {
+            this.InitMRUMenu(cmdService);
         }
 
         /// <summary>
@@ -111,17 +122,28 @@ namespace TopLevelMenu
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "TestCommand";
 
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            using (CreateWorktree form = new CreateWorktree())
+            {
+                var allRepos = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);
+                if (allRepos != null)
+                {
+                    foreach (var repository in allRepos)
+                    {
+                        if (repository.GitAttributs.IsRepository)
+                        {
+                            form.AddLocalRepositoryDirectories(repository.RepositoryPath);
+                        }
+                    }
+                }
+                form.ShowDialog();
+            }
+            RefreshWorktreeCommandService();
+        }
+
+        private void OnSelectionDirectory(object sender, EventArgs e)
+        {
+
         }
 
         private void SubItemCallback(object sender, EventArgs e)
@@ -150,10 +172,14 @@ namespace TopLevelMenu
         private ArrayList mruList;
         private void InitMRUMenu(OleMenuCommandService mcs)
         {
+            foreach (OleMenuCommand mc in wtMenues) {
+                mcs.RemoveCommand(mc);
+            }
+            wtMenues.Clear();
+            mruList.Clear();
             repositories = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);
             if (repositories != null)
             {
-                this.mruList = new ArrayList();
                 if (null != this.mruList)
                 {
                     foreach (var repository in repositories)
@@ -176,6 +202,7 @@ namespace TopLevelMenu
                 var mc = new OleMenuCommand(new EventHandler(OnMRUExec), cmdID);
                 mc.BeforeQueryStatus += new EventHandler(OnMRUQueryStatus);
                 mcs.AddCommand(mc);
+                wtMenues.Add(mc);
             }
         }
 
