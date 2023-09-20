@@ -12,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -31,6 +32,7 @@ namespace TopLevelMenu
         private RepositoryInstance.Repository[] repositories;
         private readonly OleMenuCommandService cmdService;
         private ArrayList wtMenues;
+        private CreateWorktree form;
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -123,7 +125,7 @@ namespace TopLevelMenu
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            using (CreateWorktree form = new CreateWorktree())
+            using (form = new CreateWorktree())
             {
                 var allRepos = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);
                 if (allRepos != null)
@@ -132,18 +134,13 @@ namespace TopLevelMenu
                     {
                         if (repository.GitAttributs.IsRepository)
                         {
-                            form.AddLocalRepositoryDirectories(repository.RepositoryPath);
+                            form.AddLocalRepositoryDirectories(repository);
                         }
                     }
                 }
                 form.ShowDialog();
             }
             RefreshWorktreeCommandService();
-        }
-
-        private void OnSelectionDirectory(object sender, EventArgs e)
-        {
-
         }
 
         private void SubItemCallback(object sender, EventArgs e)
