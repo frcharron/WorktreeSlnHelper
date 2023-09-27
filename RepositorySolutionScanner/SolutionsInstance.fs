@@ -134,7 +134,7 @@ module SolutionsInstance =
                 | None -> 
                     printf "not define"
             )
-        member x.Publish(framework: string option) (output) = 
+        member x.Publish(framework: string option) (output) (directoryUri) = 
             Task.Run(fun () -> 
                 match x.CustomCommand with
                 | Some command when command.PublishCmd.IsSome ->
@@ -149,7 +149,7 @@ module SolutionsInstance =
                         Execute x.Path "dotnet" (sprintf "publish %s --framework %s -c publish  --output %s" project.ProjectFilePath framework publishDir) output
                     | _ ->
                         Execute x.Path "dotnet" (sprintf "publish %s.sln -c publish  --output %s" x.Name publishDir) output
-                    Execute x.Path "explorer.exe" publishDir output |> ignore
+                    directoryUri(publishDir) |> ignore
             )
         override x.ToString() =
             let project =

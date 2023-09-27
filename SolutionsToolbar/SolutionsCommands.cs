@@ -19,6 +19,8 @@ using Directory = System.IO.Directory;
 using System.Diagnostics.Tracing;
 using System.Security.AccessControl;
 using Microsoft.FSharp.Core;
+using System.Web.UI.WebControls;
+using System.Security.Policy;
 
 namespace SolutionsToolbar
 {
@@ -246,7 +248,8 @@ namespace SolutionsToolbar
             if (currentSelectedSolution != null)
             {
                 var writeLine = FuncConvert.FromAction<System.Diagnostics.DataReceivedEventArgs>(StandardOutReceived);
-                object task = currentSelectedSolution.Publish(currentSelectedFramework, writeLine);
+                var writeUri = new DirectoryUriReceived(package, AddDirectoryUriAsync);
+                object task = currentSelectedSolution.Publish(currentSelectedFramework, writeLine, writeUri);
             }
         }
 
@@ -479,9 +482,32 @@ namespace SolutionsToolbar
                 solutionPane.OutputString("\n");
             }
         }
-        
+
+        private async Task AddDirectoryUriAsync(string outputString)
+        {
+            if (!string.IsNullOrEmpty(outputString))
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(this.package.DisposalToken);
+                solutionPane.OutputTaskItemString($"<a href=\"{outputString}\\\">Open publish directory</a>", EnvDTE.vsTaskPriority.vsTaskPriorityMedium, EnvDTE.vsTaskCategories.vsTaskCategoryBuildCompile, EnvDTE.vsTaskIcon.vsTaskIconNone, "", 0, "", true);
+                solutionPane.OutputString("\n");
+            }
+        }
+
         private void StandardOutReceived(System.Diagnostics.DataReceivedEventArgs e) {
             object task = package.JoinableTaskFactory.RunAsync(() => AddOutputStringAsync(e.Data));
+        }
+        class DirectoryUriReceived : FSharpFunc<string, Microsoft.FSharp.Core.Unit>
+        {
+            private readonly AsyncPackage package;
+            private Func<string, Task> fAdd;
+            public DirectoryUriReceived(AsyncPackage package, Func<string, Task> f1) {
+                this.package = package;
+                fAdd = f1;
+            }
+            public override Microsoft.FSharp.Core.Unit Invoke(string s) {
+                object task = package.JoinableTaskFactory.RunAsync(() => fAdd(s));
+                return null;
+            }
         }
     }
 }

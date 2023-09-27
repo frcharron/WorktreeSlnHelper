@@ -68,7 +68,7 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0,5,0,5" HorizontalAlignment="Center" Width="800">
         <DockPanel Width="800">
-            <Image Source="{StaticResource GIT}" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
+            <Image Source="/TopLevelMenu;component/Resources/Git.png" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
             <Label Foreground="White" FontSize="18" Content="Create Worktree" VerticalAlignment="Center" DockPanel.Dock="Left"/>
             <Border></Border>
         </DockPanel>
@@ -85,12 +85,12 @@
         <DockPanel Width="800">
             <Label Foreground="White" FontSize="16" Content="Define branch name"/>
             <TextBox x:Name="BranchName" Style="{StaticResource TextBoxDepencancies}" Margin="5,5,5,5" Width="300" DockPanel.Dock="Right"/>
-            <TextBox x:Name="BranchPrefix" Text="user/frcharron" Margin="5,5,5,5" Width="100" DockPanel.Dock="Right"/>
+            <TextBox x:Name="BranchPrefix" Text="user" Margin="5,5,5,5" Width="100" DockPanel.Dock="Right"/>
             <Border></Border>
         </DockPanel>
         <DockPanel Width="800">
-            <Button Name="Cancel" Style="{StaticResource Flat}" Content="Cancel" DockPanel.Dock="Right"/>
-            <Button Style="{StaticResource OpenButton}"  Content="Create" DockPanel.Dock="Right"/>
+            <Button Name="Cancel" Style="{StaticResource Flat}" Content="Cancel" DockPanel.Dock="Right" Click="Cancel_Click"/>
+            <Button Style="{StaticResource OpenButton}"  Content="Create" DockPanel.Dock="Right" Click="Button_Click"/>
             <Border></Border>
         </DockPanel>
     </StackPanel>

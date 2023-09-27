@@ -1,4 +1,5 @@
-﻿using RepositorySolutionScanner;
+﻿using Microsoft.VisualStudio.PlatformUI;
+using RepositorySolutionScanner;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,10 +28,18 @@ namespace TopLevelMenu
     public partial class DialogCreateWorktree : System.Windows.Controls.UserControl
     {
         public ArrayList repositories;
+        public Form form = null;
         public DialogCreateWorktree()
         {
             InitializeComponent(); 
             repositories = new ArrayList();
+            BranchPrefix.Text = $"user/{System.Environment.UserName}/";
+            this.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
+            this.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowTextColorKey));
+            LocalRepositoryDirectories.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
+            LocalRepositoryDirectories.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxTextColorKey));
+            LocalRepositoryBranch.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
+            LocalRepositoryBranch.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.DropDownTextColorKey));
         }
 
         private void LocalRepositoryDirectories_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -46,7 +55,17 @@ namespace TopLevelMenu
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            GitHelper.GitDirectory.CreateWorktree(BranchPrefix.Text, (string)LocalRepositoryDirectories.SelectedItem, (string)LocalRepositoryBranch.SelectedItem, BranchName.Text);
+            if (form != null)
+            {
+                GitHelper.GitDirectory.CreateWorktree(BranchPrefix.Text, (string)LocalRepositoryDirectories.SelectedItem, (string)LocalRepositoryBranch.SelectedItem, BranchName.Text);
+                form.Close();
+            }
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            if (form != null)
+                form.Close();
         }
     }
     public class LengthConverter : IValueConverter

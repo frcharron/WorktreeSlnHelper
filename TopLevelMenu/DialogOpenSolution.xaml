@@ -8,7 +8,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Background="Black">
     <UserControl.Resources>
-        <BitmapImage x:Key="GIT" UriSource="/Resources/git.png" />
+        <BitmapImage x:Key="GIT" UriSource="/Resources/Git.png" />
         <BitmapImage x:Key="SLN" UriSource="/Resources/sln.png" />
         <Style x:Key="Flat">
             <Setter Property="Control.Background" Value="{x:Null}" />
@@ -44,8 +44,8 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0,5,0,5" HorizontalAlignment="Center" Width="800">
         <DockPanel Width="800">
-            <Image Source="{StaticResource GIT}" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
-            <Label Name="WorktreeName" Foreground="White" FontSize="18" Content="Loading..." VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            <Image Source="/TopLevelMenu;component/Resources/Git.png" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
+            <TextBlock Name="WorktreeName" Foreground="White" FontSize="18" Text="Loading..." VerticalAlignment="Center" DockPanel.Dock="Left"/>
             <Border></Border>
         </DockPanel>
         <ListView x:Name="SolutionList" 
@@ -93,7 +93,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <DockPanel Width="773">
-                        <Image Source="{StaticResource SLN}" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
+                        <Image Source="{Binding Image}" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
                         <StackPanel Orientation="Vertical" Margin="5">
                             <TextBlock Text="{Binding Name}" FontSize="18"/>
                             <TextBlock Text="{Binding Path}" FontSize="12"/>

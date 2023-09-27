@@ -28,15 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateWorktree));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.dialogCreateWorktree1 = new TopLevelMenu.DialogCreateWorktree();
             this.SuspendLayout();
             // 
             // elementHost1
             // 
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.AutoSize = true;
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.elementHost1.Location = new System.Drawing.Point(1, 1);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(800, 450);
+            this.elementHost1.Size = new System.Drawing.Size(798, 198);
             this.elementHost1.TabIndex = 0;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.dialogCreateWorktree1;
@@ -45,12 +49,18 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(800, 198);
+            this.AutoSize = true;
+            this.BackColor = System.Drawing.Color.Purple;
+            this.ClientSize = new System.Drawing.Size(800, 200);
             this.Controls.Add(this.elementHost1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CreateWorktree";
+            this.Padding = new System.Windows.Forms.Padding(1);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "CreateWorktree";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

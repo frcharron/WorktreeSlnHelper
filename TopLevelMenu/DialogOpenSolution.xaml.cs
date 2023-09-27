@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using Microsoft.ServiceHub.Resources;
+using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,6 +37,8 @@ namespace TopLevelMenu
         public DialogOpenSolution()
         {
             InitializeComponent();
+            this.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
+            this.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowTextColorKey));
         }
 
         public void ShowItems(ObservableCollection<SolutionFile> items) => SolutionList.ItemsSource = items;

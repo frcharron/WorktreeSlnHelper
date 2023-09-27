@@ -18,8 +18,8 @@ namespace TopLevelMenu
         public const string guidTopLevelMenuPackageCmdSetString = "23495837-b876-4111-9ade-31c77e59af5b";
         public static Guid guidTopLevelMenuPackageCmdSet = new Guid(guidTopLevelMenuPackageCmdSetString);
 
-        public const string guidImagesString = "424a70f0-0912-4aea-8fac-ceb175d08e39";
-        public static Guid guidImages = new Guid(guidImagesString);
+        public const string guidGitLogoString = "424a70f0-0912-4aea-8fac-ceb175d08e39";
+        public static Guid guidGitLogo = new Guid(guidGitLogoString);
     }
     /// <summary>
     /// Helper class that encapsulates all CommandIDs uses across VS Package.
@@ -32,11 +32,6 @@ namespace TopLevelMenu
         public const int TestCommandId = 0x0100;
         public const int MRUListGroup = 0x1200;
         public const int cmdidMRUList = 0x0200;
-        public const int bmpPic1 = 0x0001;
-        public const int bmpPic2 = 0x0002;
-        public const int bmpPicSearch = 0x0003;
-        public const int bmpPicX = 0x0004;
-        public const int bmpPicArrows = 0x0005;
-        public const int bmpPicStrikethrough = 0x0006;
+        public const int bmpGit = 0x0001;
     }
 }

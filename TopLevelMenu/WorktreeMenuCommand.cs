@@ -1,31 +1,21 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Text;
 using RepositorySolutionScanner;
 using System;
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.ComponentModel.Design;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using static Microsoft.VisualStudio.VSConstants;
+
 using Task = System.Threading.Tasks.Task;
+
 
 namespace TopLevelMenu
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class TestCommand
+    internal sealed class WorktreeMenuCommand
     {
         private DTE dte;
         private readonly RepositorySolutionScanner.Action.CustonSolutionAction action;
@@ -50,14 +40,15 @@ namespace TopLevelMenu
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestCommand"/> class.
+        /// Initializes a new instance of the <see cref="WorktreeMenuCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private TestCommand(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
+        private WorktreeMenuCommand(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
         {
             this.dte = dte;
+
             this.action = RepositorySolutionScanner.Action.ParsingCustomSolutionFile("CustomAction.json");
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             this.cmdService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -69,21 +60,21 @@ namespace TopLevelMenu
             var menuItem = new MenuCommand(this.Execute, menuCommandID);
             cmdService.AddCommand(menuItem);
 
-            CommandID subCommandID = new CommandID(CommandSet, cmdidTestSubCmd);
-            MenuCommand subItem = new MenuCommand(new EventHandler(SubItemCallback), subCommandID);
-            cmdService.AddCommand(subItem);
-
             RefreshWorktreeCommandService();
         }
 
         private void RefreshWorktreeCommandService() {
-            this.InitMRUMenu(cmdService);
+            var t = new Task(() => {
+                this.InitMRUMenu(cmdService);
+            }
+            );
+            t.Start();
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static TestCommand Instance
+        public static WorktreeMenuCommand Instance
         {
             get;
             private set;
@@ -106,12 +97,12 @@ namespace TopLevelMenu
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in TestCommand's constructor requires
+            // Switch to the main thread - the call to AddCommand in WorktreeMenuCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new TestCommand(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
+            Instance = new WorktreeMenuCommand(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
         }
 
         /// <summary>
@@ -124,6 +115,8 @@ namespace TopLevelMenu
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            ProcessingDialog diag = new ProcessingDialog();
+            diag.StartDialog("Scaning repositories, Please Wait...");
 
             using (form = new CreateWorktree())
             {
@@ -138,31 +131,10 @@ namespace TopLevelMenu
                         }
                     }
                 }
+                diag.CloseDialog();
                 form.ShowDialog();
             }
             RefreshWorktreeCommandService();
-        }
-
-        private void SubItemCallback(object sender, EventArgs e)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            IVsUIShell uiShell = this.package.GetService<SVsUIShell, IVsUIShell>();
-            Guid clsid = Guid.Empty;
-            int result;
-            uiShell.ShowMessageBox(
-                0,
-                ref clsid,
-                "TestCommand",
-                string.Format(CultureInfo.CurrentCulture,
-                "Inside TestCommand.SubItemCallback()",
-                this.ToString()),
-                string.Empty,
-                0,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-                OLEMSGICON.OLEMSGICON_INFO,
-                0,
-                out result);
         }
 
         private int baseMRUID = (int)TopLevelMenuPackage.cmdidMRUList;
@@ -174,6 +146,8 @@ namespace TopLevelMenu
             }
             wtMenues.Clear();
             mruList.Clear();
+            ProcessingDialog diag = new ProcessingDialog();
+            diag.StartDialog("Scaning worktree, Please Wait...");
             repositories = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);
             if (repositories != null)
             {
@@ -201,6 +175,7 @@ namespace TopLevelMenu
                 mcs.AddCommand(mc);
                 wtMenues.Add(mc);
             }
+            diag.CloseDialog();
         }
 
         private void OnMRUQueryStatus(object sender, EventArgs e)
@@ -213,6 +188,7 @@ namespace TopLevelMenu
                 {
                     menuCommand.Text = this.mruList[MRUItemIndex] as string;
                 }
+                menuCommand.Visible = true;
             }
         }
 

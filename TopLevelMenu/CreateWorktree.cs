@@ -1,4 +1,5 @@
-﻿using RepositorySolutionScanner;
+﻿using Microsoft.VisualStudio.PlatformUI;
+using RepositorySolutionScanner;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace TopLevelMenu
         public CreateWorktree()
         {
             InitializeComponent();
+            dialogCreateWorktree1.form = this;
         }
 
         public void AddLocalRepositoryDirectories(RepositoryInstance.Repository repo) { 
