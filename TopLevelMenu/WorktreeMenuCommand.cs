@@ -22,6 +22,8 @@ namespace TopLevelMenu
         private RepositoryInstance.Repository[] repositories;
         private readonly OleMenuCommandService cmdService;
         private ArrayList wtMenues;
+        private ArrayList mruList;
+        private ArrayList repositoryList;
         private CreateWorktree form;
         /// <summary>
         /// Command ID.
@@ -55,6 +57,7 @@ namespace TopLevelMenu
 
             this.wtMenues = new ArrayList();
             this.mruList = new ArrayList();
+            repositoryList = new ArrayList();
 
             var menuCommandID = new CommandID(CommandSet, CommandId);
             var menuItem = new MenuCommand(this.Execute, menuCommandID);
@@ -65,7 +68,9 @@ namespace TopLevelMenu
 
         private void RefreshWorktreeCommandService() {
             var t = new Task(() => {
+                StatusBarHelper.SetOperationOn(package, "Scan Repositories and Worktrees");
                 this.InitMRUMenu(cmdService);
+                StatusBarHelper.SetOperationOff(package);
             }
             );
             t.Start();
@@ -115,40 +120,29 @@ namespace TopLevelMenu
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            ProcessingDialog diag = new ProcessingDialog();
-            diag.StartDialog("Scaning repositories, Please Wait...");
+            //ProcessingDialog diag = new ProcessingDialog();
+            //diag.StartDialog("Scaning repositories, Please Wait...");
 
             using (form = new CreateWorktree())
             {
-                var allRepos = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);
-                if (allRepos != null)
+                foreach (RepositoryInstance.Repository repository in repositoryList)
                 {
-                    foreach (var repository in allRepos)
+                    if (repository.GitAttributs.IsRepository)
                     {
-                        if (repository.GitAttributs.IsRepository)
-                        {
-                            form.AddLocalRepositoryDirectories(repository);
-                        }
+                        form.AddLocalRepositoryDirectories(repository);
                     }
                 }
-                diag.CloseDialog();
                 form.ShowDialog();
             }
             RefreshWorktreeCommandService();
         }
 
         private int baseMRUID = (int)TopLevelMenuPackage.cmdidMRUList;
-        private ArrayList mruList;
         private void InitMRUMenu(OleMenuCommandService mcs)
         {
-            foreach (OleMenuCommand mc in wtMenues) {
-                mcs.RemoveCommand(mc);
-            }
-            wtMenues.Clear();
-            mruList.Clear();
-            ProcessingDialog diag = new ProcessingDialog();
-            diag.StartDialog("Scaning worktree, Please Wait...");
             repositories = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);
+            mruList.Clear();
+            repositoryList.Clear();
             if (repositories != null)
             {
                 if (null != this.mruList)
@@ -164,9 +158,18 @@ namespace TopLevelMenu
                             }
                             this.mruList.Add(string.Format(CultureInfo.CurrentCulture, repository.RepositoryName));
                         }
+                        else if (repository.GitAttributs.IsRepository)
+                        {
+                            repositoryList.Add(repository);
+                        }
                     }
                 }
             }
+            foreach (OleMenuCommand mc in wtMenues)
+            {
+                mcs.RemoveCommand(mc);
+            }
+            wtMenues.Clear();
             for (int i = 0; i < this.mruList.Count; i++)
             {
                 var cmdID = new CommandID(CommandSet, this.baseMRUID + i);
@@ -175,7 +178,6 @@ namespace TopLevelMenu
                 mcs.AddCommand(mc);
                 wtMenues.Add(mc);
             }
-            diag.CloseDialog();
         }
 
         private void OnMRUQueryStatus(object sender, EventArgs e)

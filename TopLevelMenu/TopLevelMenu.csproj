@@ -65,18 +65,13 @@
     <Compile Include="OpenSession.Designer.cs">
       <DependentUpon>OpenSession.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProcessingDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ProcessingDialog.Designer.cs">
-      <DependentUpon>ProcessingDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="StatusBarHelper.cs" />
     <Compile Include="WorktreeMenuCommand.cs" />
     <Compile Include="TopLevelMenuPackage.cs" />
     <Compile Include="TopLevelMenuPackage1.cs">
@@ -125,9 +120,6 @@
     <Resource Include="Resources\Git.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <EmbeddedResource Include="ProcessingDialog.resx">
-      <DependentUpon>ProcessingDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
