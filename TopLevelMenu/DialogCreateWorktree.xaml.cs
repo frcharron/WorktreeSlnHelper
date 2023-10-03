@@ -34,12 +34,12 @@ namespace TopLevelMenu
             InitializeComponent(); 
             repositories = new ArrayList();
             BranchPrefix.Text = $"user/{System.Environment.UserName}/";
-            this.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
-            this.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowTextColorKey));
-            LocalRepositoryDirectories.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
-            LocalRepositoryDirectories.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxTextColorKey));
-            LocalRepositoryBranch.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
-            LocalRepositoryBranch.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.DropDownTextColorKey));
+            //this.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
+            //this.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowTextColorKey));
+            //LocalRepositoryDirectories.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
+            //LocalRepositoryDirectories.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxTextColorKey));
+            //LocalRepositoryBranch.Background = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey));
+            //LocalRepositoryBranch.Foreground = ColorHelper.ToWpfBrush(VSColorTheme.GetThemedColor(EnvironmentColors.DropDownTextColorKey));
         }
 
         private void LocalRepositoryDirectories_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -77,6 +77,39 @@ namespace TopLevelMenu
             if (text != null)
             {
                 return text.Length > 0;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GitBranchNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var text = value as string;
+
+            if (text != null)
+            {
+                return text.Length > 0 
+                    && !text.Contains("/.") 
+                    && !text.Contains(".lock") 
+                    && !text.Contains("..")
+                    && !text.Contains("~")
+                    && !text.Contains("^")
+                    && !text.Contains(":")
+                    && !text.Contains("?")
+                    && !text.Contains("*")
+                    && !text.Contains("[")
+                    && !text.Contains("]")
+                    && !text.EndsWith(".")
+                    && !text.Contains(".@{")
+                    && !text.Equals("@")
+                    && !text.Contains("\\");
             }
             return false;
         }

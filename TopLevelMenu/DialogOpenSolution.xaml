@@ -45,7 +45,7 @@
     <StackPanel Orientation="Vertical" Margin="0,5,0,5" HorizontalAlignment="Center" Width="800">
         <DockPanel Width="800">
             <Image Source="/TopLevelMenu;component/Resources/Git.png" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
-            <TextBlock Name="WorktreeName" Foreground="White" FontSize="18" Text="Loading..." VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            <TextBlock Name="WorktreeName" Foreground="White" FontSize="18" Width="600" Text="Loading..." VerticalAlignment="Center" DockPanel.Dock="Left"/>
             <Border></Border>
         </DockPanel>
         <ListView x:Name="SolutionList" 

@@ -41,9 +41,10 @@ namespace TopLevelMenu
             var t = new Task(async () => {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
                 IVsStatusbar statusBar = await package.GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
+                object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Find;
                 statusBar.FreezeOutput(0); 
                 statusBar.SetText("");
-                statusBar.Animation(0, null);
+                statusBar.Animation(0, icon);
                 statusBar.Clear();
             }
 #pragma warning restore VSTHRD101 // Avoid unsupported async delegates

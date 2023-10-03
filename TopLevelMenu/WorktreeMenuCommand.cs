@@ -120,9 +120,6 @@ namespace TopLevelMenu
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            //ProcessingDialog diag = new ProcessingDialog();
-            //diag.StartDialog("Scaning repositories, Please Wait...");
-
             using (form = new CreateWorktree())
             {
                 foreach (RepositoryInstance.Repository repository in repositoryList)

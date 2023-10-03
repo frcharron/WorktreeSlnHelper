@@ -4,12 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:conv="clr-namespace:TopLevelMenu"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="230"
-             Background="Black">
+             xmlns:vsShell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="220"
+             Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
     <UserControl.Resources>
         <BitmapImage x:Key="GIT" UriSource="/Resources/git.png" />
         <BitmapImage x:Key="SLN" UriSource="/Resources/sln.png" />
         <conv:LengthConverter x:Key="converter" />
+        <conv:GitBranchNameConverter x:Key="gitConv" />
         <Style x:Key="Flat">
             <Setter Property="Control.Background" Value="{x:Null}" />
             <Setter Property="Control.BorderBrush" Value="purple" />
@@ -32,16 +34,59 @@
         <Style x:Key="OpenButton" BasedOn="{StaticResource Flat}" TargetType="Button">
             <Setter Property="IsEnabled" Value="false"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ElementName=BranchName, Path=Text, Converter={StaticResource converter}}" Value="true">
+                <DataTrigger Binding="{Binding ElementName=BranchName, Path=Text, Converter={StaticResource gitConv}}" Value="true">
                     <Setter Property="IsEnabled" Value="true"/>
                 </DataTrigger>
                 <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Background" Value="DarkGray"/>
+                    <Setter Property="Background" Value="#FF353535"/>
                     <Setter Property="Foreground" Value="Gray"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="ComboBoxDepencancies" TargetType="ComboBox">
+        <Style x:Key="ComboBox" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="20" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolboxBackgroundBrushKey}}" BorderBrush="Black" BorderThickness="1" />
+                                            <Border Grid.Column="0"  Margin="1"  Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolboxBackgroundBrushKey}}"  BorderBrush="Black" BorderThickness="0,0,1,0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Opacity" Value="0.1" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                <Setter TargetName="Border" Property="Opacity" Value="0.9" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+                            <TextBox x:Name="PART_EditableTextBox" Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ComboBoxDepencancies" BasedOn="{StaticResource ComboBox}" TargetType="ComboBox">
             <Setter Property="IsEnabled" Value="False"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ElementName=LocalRepositoryDirectories, Path=SelectedItems.Count}" Value="1">
@@ -53,42 +98,52 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <Style x:Key="TextBoxDepencancies" TargetType="TextBox">
+        <Style x:Key="TextBoxValidBranchName" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowBackgroundBrushKey}}" />
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=BranchName, Path=Text, Converter={StaticResource gitConv}}" Value="false">
+                    <Setter Property="Background" Value="Red" />
+                    <Setter Property="Foreground" Value="White" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TextBoxDepencancies" BasedOn="{StaticResource TextBoxValidBranchName}" TargetType="TextBox">
             <Setter Property="IsEnabled" Value="False"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ElementName=LocalRepositoryBranch, Path=SelectedItems.Count}" Value="1">
                     <Setter Property="IsEnabled" Value="true"/>
                 </DataTrigger>
                 <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Background" Value="DarkGray"/>
+                    <Setter Property="Background" Value="Purple"/>
                     <Setter Property="Foreground" Value="Gray"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical" Margin="0,5,0,5" HorizontalAlignment="Center" Width="800">
-        <DockPanel Width="800">
+    <StackPanel Orientation="Vertical" Margin="0,5,0,5" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <DockPanel Width="Auto">
             <Image Source="/TopLevelMenu;component/Resources/Git.png" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
-            <Label Foreground="White" FontSize="18" Content="Create Worktree" VerticalAlignment="Center" DockPanel.Dock="Left"/>
+            <Label Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" FontSize="16" Content="Create Worktree" VerticalAlignment="Center" DockPanel.Dock="Left"/>
             <Border></Border>
         </DockPanel>
-        <DockPanel Width="800">
-            <Label Foreground="White" FontSize="16" Content="Select local repository directory"/>
-            <ComboBox Name="LocalRepositoryDirectories" Margin="5,5,5,5" Width="410" DockPanel.Dock="Right" SelectionChanged="LocalRepositoryDirectories_SelectionChanged"/>
+        <DockPanel>
+            <Label Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" FontSize="14" Content="Select local repository directory"/>
+            <ComboBox Name="LocalRepositoryDirectories" Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" Style="{StaticResource ComboBox}" Margin="5,5,5,5" Width="410" DockPanel.Dock="Right" SelectionChanged="LocalRepositoryDirectories_SelectionChanged"/>
             <Border></Border>
         </DockPanel>
-        <DockPanel Width="800">
-            <Label Foreground="White" FontSize="16" Content="Select base branch"/>
-            <ComboBox Name="LocalRepositoryBranch" Style="{StaticResource ComboBoxDepencancies}" Margin="5,5,5,5" Width="410" DockPanel.Dock="Right"/>
+        <DockPanel>
+            <Label Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" FontSize="14" Content="Select base branch"/>
+            <ComboBox Name="LocalRepositoryBranch" Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" Style="{StaticResource ComboBoxDepencancies}" Margin="5,5,5,5" Width="410" DockPanel.Dock="Right"/>
             <Border></Border>
         </DockPanel>
-        <DockPanel Width="800">
-            <Label Foreground="White" FontSize="16" Content="Define branch name"/>
-            <TextBox x:Name="BranchName" Style="{StaticResource TextBoxDepencancies}" Margin="5,5,5,5" Width="300" DockPanel.Dock="Right"/>
-            <TextBox x:Name="BranchPrefix" Text="user" Margin="5,5,5,5" Width="100" DockPanel.Dock="Right"/>
+        <DockPanel>
+            <Label Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" FontSize="14" Content="Define branch name"/>
+            <TextBox x:Name="BranchName" Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" Style="{StaticResource TextBoxDepencancies}" Margin="5,5,5,5" Width="300" DockPanel.Dock="Right"/>
+            <TextBox x:Name="BranchPrefix" Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowBackgroundBrushKey}}" Text="user" Margin="5,5,5,5" Width="100" DockPanel.Dock="Right"/>
             <Border></Border>
         </DockPanel>
-        <DockPanel Width="800">
+        <DockPanel>
             <Button Name="Cancel" Style="{StaticResource Flat}" Content="Cancel" DockPanel.Dock="Right" Click="Cancel_Click"/>
             <Button Style="{StaticResource OpenButton}"  Content="Create" DockPanel.Dock="Right" Click="Button_Click"/>
             <Border></Border>
