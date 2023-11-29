@@ -44,7 +44,10 @@ namespace SolutionsToolbar
                            Directory.CreateDirectory(localAppDataConfig);
                     var fileAction = Path.Combine(localAppDataConfig, "CustomAction.json");
                     var custom = RepositorySolutionScanner.Action.ParsingCustomSolutionFile(fileAction);
-                    listSolutions = Scanner.StartScan(GitHelper.GetTopLevelDirectory(directoryRoot), custom);
+                    string solutionDirectory = GitHelper.GetTopLevelDirectory(directoryRoot);
+                    if (String.IsNullOrEmpty(solutionDirectory))
+                        solutionDirectory = directoryRoot;
+                    listSolutions = Scanner.StartScan(solutionDirectory, custom);
                     latestUpdate = DateTime.UtcNow;
                     latestDirectoryPath = directoryRoot;
                 }

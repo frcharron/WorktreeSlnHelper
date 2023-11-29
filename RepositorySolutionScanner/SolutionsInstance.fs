@@ -12,6 +12,7 @@ module SolutionsInstance =
         OutputPath : string
         ProjectFilePath : string
         Framework : string array
+        Configuration : string array
         CustomCommand : Action.ProjectAct option
     }
     with 
@@ -35,6 +36,7 @@ module SolutionsInstance =
                 OutputPath = ""
                 ProjectFilePath = ""
                 Framework = Array.empty
+                Configuration = Array.empty
                 CustomCommand = None
             }
         static member Create (filename: string) (command: ProjectAct option) =
@@ -50,9 +52,13 @@ module SolutionsInstance =
                         let line = fileStream.ReadLine()
                         if line.Contains "<OutputType>Exe</OutputType>" then
                             parsing fileStream {project with Name = Path.GetFileNameWithoutExtension(filename)}
-                        else if line.Contains @"'$(Configuration)|$(Platform)'=='Debug|"then
-                            let path = fileStream.ReadLine().Replace(@"<OutputPath>", "").Replace(@"</OutputPath>", "").TrimStart().TrimEnd()
-                            parsing fileStream {project with OutputPath = Path.Combine(Path.GetDirectoryName(filename),path)}
+                        else if line.Contains @"'$(Configuration)|" then
+                            let configuration = ""
+                            if line.Contains @"'$(Configuration)|$(Platform)'=='Debug|"then
+                                let path = fileStream.ReadLine().Replace(@"<OutputPath>", "").Replace(@"</OutputPath>", "").TrimStart().TrimEnd()
+                                parsing fileStream {project with OutputPath = Path.Combine(Path.GetDirectoryName(filename),path); Configuration = project.Configuration |> Array.append [|"Debug"|]}
+                            else
+                                parsing fileStream {project with Configuration = project.Configuration |> Array.append [|configuration|]}
                         else if line.Contains "TargetFrameworks" then
                             let framework = 
                                 line.Replace(@"<TargetFrameworks>", "").Replace(@"</TargetFrameworks>", "").TrimStart().TrimEnd().Split(';')
@@ -177,7 +183,7 @@ module SolutionsInstance =
                     solution
                 else
                     let line = fileStream.ReadLine()
-                    if line.Contains "Project(" && (solution.RunningProject.IsNone) then
+                    if line.Contains "Project(" then
                         let definition = line.Split '='
                         let property = definition[1].Split ','
                         let project =

@@ -15,8 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FSharp.Data" Version="6.2.0" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.6.2164">
+    <PackageReference Include="FSharp.Data" Version="6.3.0" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.8.37222" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
