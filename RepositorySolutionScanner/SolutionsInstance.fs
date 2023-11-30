@@ -50,7 +50,12 @@ module SolutionsInstance =
                     |> Seq.cast<XmlNode>
                     |> Seq.exists (fun (node:XmlNode) -> 
                         node.InnerText.ToString().ToUpper().Equals "EXE")
-                if isNetExecutable then
+                let isCExecutable =
+                    xmlDoc.SelectNodes("//OutputFile")
+                    |> Seq.cast<XmlNode>
+                    |> Seq.exists (fun (node:XmlNode) -> 
+                        node.InnerText.ToString().Contains ".exe")
+                if isNetExecutable || isCExecutable then
                     let outputPaths = 
                         xmlDoc.SelectNodes("//OutputPath")
                         |> Seq.cast<XmlNode>
