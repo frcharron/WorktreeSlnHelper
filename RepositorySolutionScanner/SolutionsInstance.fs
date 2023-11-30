@@ -5,6 +5,7 @@ open Action
 open ExecuteHelper
 open System
 open System.Threading.Tasks
+open System.Xml
 
 module SolutionsInstance =
     type Project = {
@@ -42,35 +43,40 @@ module SolutionsInstance =
         static member Create (filename: string) (command: ProjectAct option) =
             try 
                 use fileStream = new StreamReader (filename)
-                let rec parsing (fileStream : StreamReader) (project: Project) : Project option =
-                    if fileStream.EndOfStream then
-                        if project.Name.Length = 0 then
-                            None
-                        else
-                            Some project
-                    else
-                        let line = fileStream.ReadLine()
-                        if line.Contains "<OutputType>Exe</OutputType>" then
-                            parsing fileStream {project with Name = Path.GetFileNameWithoutExtension(filename)}
-                        else if line.Contains @"'$(Configuration)|" then
-                            let configuration = ""
-                            if line.Contains @"'$(Configuration)|$(Platform)'=='Debug|"then
-                                let path = fileStream.ReadLine().Replace(@"<OutputPath>", "").Replace(@"</OutputPath>", "").TrimStart().TrimEnd()
-                                parsing fileStream {project with OutputPath = Path.Combine(Path.GetDirectoryName(filename),path); Configuration = project.Configuration |> Array.append [|"Debug"|]}
+                let xmlDoc = new XmlDocument()
+                xmlDoc.LoadXml (fileStream.ReadToEnd())
+                let isNetExecutable =
+                    xmlDoc.SelectNodes("//OutputType")
+                    |> Seq.cast<XmlNode>
+                    |> Seq.exists (fun (node:XmlNode) -> 
+                        node.InnerText.ToString().ToUpper().Equals "EXE")
+                if isNetExecutable then
+                    let outputPaths = 
+                        xmlDoc.SelectNodes("//OutputPath")
+                        |> Seq.cast<XmlNode>
+                        |> Seq.map (fun (node:XmlNode) -> node.InnerText.ToString())
+                        |> Seq.toList
+                    let targetFramework = 
+                        xmlDoc.SelectNodes("//TargetFrameworks")
+                        |> Seq.cast<XmlNode>
+                        |> Seq.map (fun (node:XmlNode) -> node.InnerText.ToString())
+                        |> Seq.map (fun (targets) -> targets.Split(';') |> Array.toSeq)
+                        |> Seq.collect id
+                        |> Seq.toArray
+                    {
+                        Name = Path.GetFileNameWithoutExtension(filename)
+                        OutputPath = 
+                            if outputPaths.Length > 0 then
+                                Path.Combine(Path.GetDirectoryName(filename),outputPaths[0])
                             else
-                                parsing fileStream {project with Configuration = project.Configuration |> Array.append [|configuration|]}
-                        else if line.Contains "TargetFrameworks" then
-                            let framework = 
-                                line.Replace(@"<TargetFrameworks>", "").Replace(@"</TargetFrameworks>", "").TrimStart().TrimEnd().Split(';')
-                                |> Array.filter(fun contain -> not (contain.Length = 0))
-                            parsing fileStream {project with Framework = framework}
-                        else
-                            parsing fileStream project
-                parsing fileStream {Project.Default with 
-                                        OutputPath = Path.Combine(Path.GetDirectoryName(filename), "bin", "Debug")
-                                        ProjectFilePath = filename
-                                        CustomCommand = command
-                                    }
+                                Path.Combine(Path.GetDirectoryName(filename), "bin", "Debug")
+                        ProjectFilePath = filename
+                        Framework = targetFramework
+                        Configuration = Array.empty
+                        CustomCommand = command
+                    }
+                    |> Some
+                else None
             with _ ->
                 None
 
