@@ -6,6 +6,7 @@ open ExecuteHelper
 open System
 open System.Threading.Tasks
 open System.Xml
+open FSharp.Text.RegexProvider
 
 module SolutionsInstance =
     type Project = {
@@ -13,7 +14,6 @@ module SolutionsInstance =
         OutputPath : string
         ProjectFilePath : string
         Framework : string array
-        Configuration : string array
         CustomCommand : Action.ProjectAct option
     }
     with 
@@ -37,7 +37,6 @@ module SolutionsInstance =
                 OutputPath = ""
                 ProjectFilePath = ""
                 Framework = Array.empty
-                Configuration = Array.empty
                 CustomCommand = None
             }
         static member Create (filename: string) (command: ProjectAct option) =
@@ -77,13 +76,33 @@ module SolutionsInstance =
                                 Path.Combine(Path.GetDirectoryName(filename), "bin", "Debug")
                         ProjectFilePath = filename
                         Framework = targetFramework
-                        Configuration = Array.empty
                         CustomCommand = command
                     }
                     |> Some
                 else None
             with _ ->
                 None
+
+    type ProjectInfoRegex = Regex<"Project\\([^)]*\\) = \"(?<ProjectName>[^\"]*)\", \"(?<ProjectPath>[^\"]*)\", \"(?<ProjectGUID>\\{[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\\})\"">
+    type SolutionInfoRegex = Regex<"SolutionGuid = \"(?<SolutionGUID>\\{[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}\\})\"">
+
+    type SolutionAttribut =
+        | ProjectInfo of projectName: string * projectGUID: string * projectRelativePath: string
+        | SolutionInfo of solutionGuid: string
+        | ConfigurationMapping of solutionCfg: string * projectCfg: string
+    with
+        static member GetAttribut(solutionStream: StreamReader) =
+            let line = solutionStream.ReadLine()
+            match ProjectInfoRegex().TryTypedMatch(line), SolutionInfoRegex().TryTypedMatch(line) with
+            | Some projet, _ ->
+                let definition = line.Split '='
+                let property = definition[1].Split ','
+                Some(ProjectInfo(projet.ProjectName.Value, projet.ProjectGUID.Value, projet.ProjectPath.Value))
+            | _, Some solution ->
+                let definition = line.Split '='
+                Some(SolutionInfo(solution.SolutionGUID.Value))
+            | _ ->
+                None      
 
     type Solution = {
         Guid : string
@@ -193,22 +212,17 @@ module SolutionsInstance =
                 if fileStream.EndOfStream then
                     solution
                 else
-                    let line = fileStream.ReadLine()
-                    if line.Contains "Project(" then
-                        let definition = line.Split '='
-                        let property = definition[1].Split ','
+                    match SolutionAttribut.GetAttribut(fileStream) with
+                    | Some (ProjectInfo (name, guid, path)) -> 
                         let project =
                             match solution.RunningProject with
-                            | Some project when project.Name.Length = 0 ->
-                                Project.Create (Path.Combine(solution.Path,property[1].Replace("\"","").TrimStart().TrimEnd())) project.CustomCommand
-                            | None ->
-                                Project.Create (Path.Combine(solution.Path,property[1].Replace("\"","").TrimStart().TrimEnd())) None
-                            | _ -> solution.RunningProject
-
+                                | Some project when project.Name.Length = 0 ->
+                                    Project.Create (Path.Combine(path)) project.CustomCommand
+                                | None ->
+                                    Project.Create (Path.Combine(path)) None
+                                | _ -> solution.RunningProject
                         parsing fileStream {solution with RunningProject = project}
-                    else if line.Contains "SolutionGuid" then
-                        let definition = line.Split '='
-                        let guid =  definition[1].Replace(" ", "").Replace("{", "").Replace("{", "")
+                    | Some (SolutionInfo guid) ->
                         let customAct, customProj = 
                             customAction.TryFindCustomAction (guid)
                         let runningProject =
@@ -221,9 +235,8 @@ module SolutionsInstance =
                                                 CustomCommand = customAct
                                                 RunningProject = runningProject
                                             }
-                    else
+                    | _ -> 
                         parsing fileStream solution
-            
 
             let customAct, customProj = 
                 customAction.TryFindCustomAction (Path.GetFileNameWithoutExtension(filename))

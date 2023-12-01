@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="FSharp.Data" Version="6.3.0" />
+    <PackageReference Include="FSharp.Text.RegexProvider" Version="2.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.8.37222" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196">
       <PrivateAssets>all</PrivateAssets>
