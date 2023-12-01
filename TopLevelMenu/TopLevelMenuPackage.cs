@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
 
-namespace TopLevelMenu
+namespace Waap
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -25,14 +25,14 @@ namespace TopLevelMenu
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(TopLevelMenuPackage.PackageGuidString)]
+    [Guid(WaapPackage.PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string, PackageAutoLoadFlags.BackgroundLoad)]
-    public sealed class TopLevelMenuPackage : AsyncPackage
+    public sealed class WaapPackage : AsyncPackage
     {
         /// <summary>
-        /// TopLevelMenuPackage GUID string.
+        /// WaapPackage GUID string.
         /// </summary>
         public const string PackageGuidString = "e41dd5d0-899a-4994-84f9-ebd689bcb422";
         public const uint cmdidMRUList = 0x200;

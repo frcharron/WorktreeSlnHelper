@@ -36,8 +36,8 @@
 	    <Menu guid="guidSolutionsToolbarPackageCmdSet" id="Toolbar" type="Toolbar">
 		    <CommandFlag>DefaultDocked</CommandFlag>
 		    <Strings>
-			    <ButtonText>Solutions Toolbar</ButtonText>
-			    <CommandName>Solutions Toolbar</CommandName>
+			    <ButtonText>SHaaP</ButtonText>
+			    <CommandName>Solutions Helper as a Plugin</CommandName>
 		    </Strings>
 	    </Menu>
 	</Menus>

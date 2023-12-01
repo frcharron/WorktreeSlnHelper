@@ -8,7 +8,7 @@ using System.Windows.Media;
 using Color = System.Drawing.Color;
 using Brush = System.Windows.Media.Brush;
 
-namespace TopLevelMenu
+namespace Waap
 {
     public static class ColorHelper
     {

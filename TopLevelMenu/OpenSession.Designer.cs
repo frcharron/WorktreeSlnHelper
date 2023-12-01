@@ -1,4 +1,4 @@
-﻿namespace TopLevelMenu
+﻿namespace Waap
 {
     partial class OpenSession
     {
@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenSession));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.dialogOpenSolution1 = new TopLevelMenu.DialogOpenSolution();
+            this.dialogOpenSolution1 = new Waap.DialogOpenSolution();
             this.SuspendLayout();
             // 
             // elementHost1

@@ -1,4 +1,4 @@
-﻿namespace TopLevelMenu
+﻿namespace Waap
 {
     partial class CreateWorktree
     {
@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateWorktree));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.dialogCreateWorktree1 = new TopLevelMenu.DialogCreateWorktree();
+            this.dialogCreateWorktree1 = new Waap.DialogCreateWorktree();
             this.SuspendLayout();
             // 
             // elementHost1

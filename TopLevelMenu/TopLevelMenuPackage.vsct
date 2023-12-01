@@ -22,7 +22,7 @@
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidTopLevelMenuPackage">
+  <Commands package="guidWaapPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
@@ -36,7 +36,7 @@
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
 	  <Menus>
-		  <Menu guid="guidTopLevelMenuPackageCmdSet" id="TopLevelMenu" priority="0x198" type="Menu">
+		  <Menu guid="guidWaapPackageCmdSet" id="Waap" priority="0x198" type="Menu">
 			  <Parent guid="guidSHLMainMenu"
 					  id="IDG_VS_FILE_FILE" />
 			  <Strings>
@@ -44,7 +44,7 @@
 			  </Strings>
 		  </Menu>
 		  <!--
-		      <Menu guid="guidTopLevelMenuPackageCmdSet" id="TopLevelMenu" priority="0x199" type="Menu">
+		      <Menu guid="guidWaapPackageCmdSet" id="Waap" priority="0x199" type="Menu">
 			      <Parent guid="guidSHLMainMenu"
 					      id="IDG_VS_FILE_FILE" />
 			      <Strings>
@@ -55,11 +55,11 @@
 	  </Menus>
 	  
     <Groups>
-      <Group guid="guidTopLevelMenuPackageCmdSet" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidTopLevelMenuPackageCmdSet" id="TopLevelMenu"/>
+      <Group guid="guidWaapPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidWaapPackageCmdSet" id="Waap"/>
       </Group>
-		<Group guid="guidTopLevelMenuPackageCmdSet" id="MRUListGroup" priority="0x0601">
-			<Parent guid="guidTopLevelMenuPackageCmdSet" id="TopLevelMenu"/>
+		<Group guid="guidWaapPackageCmdSet" id="MRUListGroup" priority="0x0601">
+			<Parent guid="guidWaapPackageCmdSet" id="Waap"/>
 		</Group>
 	</Groups>
 
@@ -74,15 +74,15 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidTopLevelMenuPackageCmdSet" id="TestCommandId" priority="0x0197" type="Button">
+      <Button guid="guidWaapPackageCmdSet" id="TestCommandId" priority="0x0197" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_FILE_FILE" />
         <Icon guid="guidGitLogo" id="bmpGit" />
         <Strings>
           <ButtonText>New Worktree</ButtonText>
         </Strings>
       </Button>
-		<Button guid="guidTopLevelMenuPackageCmdSet" id="cmdidMRUList" type="Button" priority="0x0100">
-			<Parent guid="guidTopLevelMenuPackageCmdSet" id="MRUListGroup" />
+		<Button guid="guidWaapPackageCmdSet" id="cmdidMRUList" type="Button" priority="0x0100">
+			<Parent guid="guidWaapPackageCmdSet" id="MRUListGroup" />
 			<CommandFlag>DynamicItemStart</CommandFlag>
 			<CommandFlag>DefaultInvisible</CommandFlag>
 			<CommandFlag>DynamicVisibility</CommandFlag>
@@ -106,11 +106,11 @@
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidTopLevelMenuPackage" value="{e41dd5d0-899a-4994-84f9-ebd689bcb422}" />
+    <GuidSymbol name="guidWaapPackage" value="{e41dd5d0-899a-4994-84f9-ebd689bcb422}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidTopLevelMenuPackageCmdSet" value="{23495837-b876-4111-9ade-31c77e59af5b}">
-	  <IDSymbol name="TopLevelMenu" value="0x1021"/>
+    <GuidSymbol name="guidWaapPackageCmdSet" value="{23495837-b876-4111-9ade-31c77e59af5b}">
+	  <IDSymbol name="Waap" value="0x1021"/>
 	  <IDSymbol name="cmdidTestSubCommand" value="0x0105"/>
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="TestCommandId" value="0x0100" />

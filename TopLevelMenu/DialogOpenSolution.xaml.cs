@@ -19,10 +19,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static TopLevelMenu.SolutionFiles;
+using static Waap.SolutionFiles;
 using Image = System.Drawing.Image;
 
-namespace TopLevelMenu
+namespace Waap
 {
     /// <summary>
     /// Interaction logic for DialogOpenSolution.xaml

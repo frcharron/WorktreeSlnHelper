@@ -4,6 +4,7 @@
     <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <TargetFrameworkProfile />
+    <Ngen>false</Ngen>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -11,12 +12,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{FF9059CB-C57A-4565-AE87-2B1D25CCD835}</ProjectGuid>
+    <ProjectGuid>{52A1BD34-FBE3-4000-999D-A4ED553C8985}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TopLevelMenu</RootNamespace>
-    <AssemblyName>TopLevelMenu</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <RootNamespace>SHaaP</RootNamespace>
+    <AssemblyName>SHaaP</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -46,38 +47,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ColorHelper.cs" />
-    <Compile Include="CreateWorktree.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="CreateWorktree.Designer.cs">
-      <DependentUpon>CreateWorktree.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DialogCreateWorktree.xaml.cs">
-      <DependentUpon>DialogCreateWorktree.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DialogOpenSolution.xaml.cs">
-      <DependentUpon>DialogOpenSolution.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="OpenSession.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OpenSession.Designer.cs">
-      <DependentUpon>OpenSession.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="SolutionsCommands.cs" />
+    <Compile Include="SolutionsToolbarPackage.cs" />
+    <Compile Include="SolutionsToolbarPackage1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="StatusBarHelper.cs" />
-    <Compile Include="WorktreeMenuCommand.cs" />
-    <Compile Include="TopLevelMenuPackage.cs" />
-    <Compile Include="TopLevelMenuPackage1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TopLevelMenuPackage.vsct</DependentUpon>
+      <DependentUpon>SolutionsToolbarPackage.vsct</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -87,19 +63,13 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.8.37222" ExcludeAssets="runtime">
@@ -111,59 +81,34 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="TopLevelMenuPackage.vsct">
+    <VSCTCompile Include="SolutionsToolbarPackage.vsct">
       <Generator>VsctGenerator</Generator>
       <ResourceName>Menus.ctmenu</ResourceName>
-      <LastGenOutput>TopLevelMenuPackage1.cs</LastGenOutput>
+      <LastGenOutput>SolutionsToolbarPackage1.cs</LastGenOutput>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CreateWorktree.resx">
-      <DependentUpon>CreateWorktree.cs</DependentUpon>
-    </EmbeddedResource>
-    <Content Include="Git.png" />
-    <Resource Include="Resources\Git.png">
+    <Content Include="..\RepositorySolutionScanner\bin\$(Configuration)\net472\RepositorySolutionScanner.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\sln.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <Content Include="..\RepositorySolutionScanner\bin\Debug\net472\RepositorySolutionScanner.dll">
-      <Link>RepositorySolutionScanner.dll</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="Resources\git.ico" />
-    <Content Include="Resources\TestCommand.png" />
-    <EmbeddedResource Include="OpenSession.resx">
-      <DependentUpon>OpenSession.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\wp6734564.png">
+    <Content Include="Resources\BuildSolutionCommand.png" />
+    <Content Include="Resources\PublishSolutionCommand.png" />
+    <Content Include="Resources\RebuildSolutionCommand.png" />
+    <Content Include="Resources\RunSolutionCommand.png" />
+    <Content Include="Resources\SolutionFileSelectCommand.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DialogCreateWorktree.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DialogOpenSolution.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RepositorySolutionScanner\RepositorySolutionScanner.fsproj">
       <Project>{e44703b7-d5a6-4f97-a678-fa1025a2f7c5}</Project>
       <Name>RepositorySolutionScanner</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

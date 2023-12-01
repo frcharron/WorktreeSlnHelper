@@ -10,7 +10,7 @@ using System.IO;
 using Task = System.Threading.Tasks.Task;
 
 
-namespace TopLevelMenu
+namespace Waap
 {
     /// <summary>
     /// Command handler
@@ -134,7 +134,7 @@ namespace TopLevelMenu
             RefreshWorktreeCommandService();
         }
 
-        private int baseMRUID = (int)TopLevelMenuPackage.cmdidMRUList;
+        private int baseMRUID = (int)WaapPackage.cmdidMRUList;
         private void InitMRUMenu(OleMenuCommandService mcs)
         {
             repositories = RepositoryInstance.Repository.ScanRepositories(@"C:\git\", action);

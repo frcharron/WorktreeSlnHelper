@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CLI RepoSolutionHelper", "C
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "RepositorySolutionScanner", "RepositorySolutionScanner\RepositorySolutionScanner.fsproj", "{E44703B7-D5A6-4F97-A678-FA1025A2F7C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolutionsToolbar", "SolutionsToolbar\SolutionsToolbar.csproj", "{52A1BD34-FBE3-4000-999D-A4ED553C8985}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SHaaP", "SolutionsToolbar\SHaaP.csproj", "{52A1BD34-FBE3-4000-999D-A4ED553C8985}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TopLevelMenu", "TopLevelMenu\TopLevelMenu.csproj", "{FF9059CB-C57A-4565-AE87-2B1D25CCD835}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Waap", "TopLevelMenu\Waap.csproj", "{FF9059CB-C57A-4565-AE87-2B1D25CCD835}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,7 +9,7 @@ using System.IO.Packaging;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace TopLevelMenu
+namespace Waap
 {
     internal class StatusBarHelper
     {

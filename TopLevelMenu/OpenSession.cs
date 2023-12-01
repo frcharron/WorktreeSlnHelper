@@ -19,7 +19,7 @@ using System.Windows.Forms.Integration;
 using System.Windows.Navigation;
 using System.Windows.Resources;
 
-namespace TopLevelMenu
+namespace Waap
 {
     public partial class OpenSession : Form
     {
@@ -54,7 +54,7 @@ namespace TopLevelMenu
         {
             Assembly _assembly = Assembly.GetExecutingAssembly();
 
-            Stream _imageStream = _assembly.GetManifestResourceStream("TopLevelMenu.Resources.sln.png");
+            Stream _imageStream = _assembly.GetManifestResourceStream("Waap.Resources.sln.png");
             var img = System.Drawing.Image.FromStream(_imageStream);
             foreach (var solution in solutions)
             {

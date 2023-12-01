@@ -27,7 +27,7 @@ namespace SolutionsToolbar
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class SolutionsCommands
+    internal sealed class SHaaP
     {
         private class Solutions {
             private SolutionsInstance.Solution[] listSolutions;
@@ -113,12 +113,12 @@ namespace SolutionsToolbar
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SolutionsCommands"/> class.
+        /// Initializes a new instance of the <see cref="SHaaP"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private SolutionsCommands(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
+        private SHaaP(AsyncPackage package, OleMenuCommandService commandService, DTE dte)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             this.dte = dte;
@@ -177,7 +177,7 @@ namespace SolutionsToolbar
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static SolutionsCommands Instance
+        public static SHaaP Instance
         {
             get;
             private set;
@@ -205,7 +205,7 @@ namespace SolutionsToolbar
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new SolutionsCommands(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
+            Instance = new SHaaP(package, commandService, await package.GetServiceAsync(typeof(DTE)) as DTE);
         }
 
         /// <summary>

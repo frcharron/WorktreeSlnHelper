@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="TopLevelMenu.DialogCreateWorktree"
+﻿<UserControl x:Class="Waap.DialogCreateWorktree"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:conv="clr-namespace:TopLevelMenu"
+             xmlns:conv="clr-namespace:Waap"
              xmlns:vsShell="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="220"
              Background="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowBackgroundBrushKey}}">
@@ -123,7 +123,7 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0,5,0,5" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <DockPanel Width="Auto">
-            <Image Source="/TopLevelMenu;component/Resources/Git.png" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
+            <Image Source="/Waap;component/Resources/Git.png" DockPanel.Dock="Left" Height="48" Width="48" VerticalAlignment="Center" Margin="5"/>
             <Label Foreground="{DynamicResource {x:Static vsShell:EnvironmentColors.ToolWindowTextBrushKey}}" FontSize="16" Content="Create Worktree" VerticalAlignment="Center" DockPanel.Dock="Left"/>
             <Border></Border>
         </DockPanel>

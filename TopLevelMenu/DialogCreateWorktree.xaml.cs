@@ -20,7 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 
-namespace TopLevelMenu
+namespace Waap
 {
     /// <summary>
     /// Interaction logic for DialogCreateWorktree.xaml
