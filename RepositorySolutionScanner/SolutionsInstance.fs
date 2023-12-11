@@ -9,34 +9,54 @@ open System.Xml
 open FSharp.Text.RegexProvider
 
 module SolutionsInstance =
+    type CustomActionBuild = {
+        Build: (string * string) option
+        Rebuild: (string * string) option
+        Publish: (string * string * string) option
+    }
+        
     type BuildTools =
         | MSBuild
         | Dotnet
+        | Custom of CustomActionBuild
     with 
         member x.CanBuild = 
             match x with
             | MSBuild -> true
             | Dotnet -> true
+            | Custom action -> action.Build.IsSome
         member x.CanRebuild = 
             match x with
             | MSBuild -> true
             | Dotnet -> true
+            | Custom action -> action.Rebuild.IsSome
         member x.CanPublish = 
             match x with
             | MSBuild -> false
             | Dotnet -> true
+            | Custom action -> action.Publish.IsSome
         member x.GetBuildCommand (projectPath: string) (configuration: string) (customArg: string) =
             match x with
             | MSBuild -> "msbuild.exe", $"/p:Configuration={configuration} {projectPath}"
             | Dotnet -> "dotnet",  $"build {projectPath} {customArg} -c {configuration}"
+            | Custom action when action.Build.IsSome -> 
+                action.Build.Value
+            | _ -> "", ""
         member x.GetRebuildCommand (projectPath: string) (configuration: string) (customArg: string) =
             match x with
             | MSBuild -> "msbuild.exe", $"/p:Configuration={configuration} {projectPath} -t:rebuild"
             | Dotnet -> "dotnet", $"build {projectPath} {customArg} -c {configuration} --no-incremental"
+            | Custom action when action.Rebuild.IsSome -> 
+                action.Rebuild.Value
+            | _ -> "", ""
         member x.GetPublishCommand (projectPath: string) (configuration: string) (customArg: string) (publishDirectory: string) = 
             match x with
             | MSBuild -> "msbuild.exe", ""
             | Dotnet -> "dotnet", $"publish {projectPath} {customArg} -c {configuration} --output {publishDirectory}"
+            | Custom action when action.Publish.IsSome -> 
+                let cmd, arg, _ = action.Publish.Value
+                cmd, arg
+            | _ -> "", ""
 
     type Project = {
         Name : string
