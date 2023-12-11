@@ -9,12 +9,30 @@ open System.Xml
 open FSharp.Text.RegexProvider
 
 module SolutionsInstance =
+    type BuildTools =
+        | MSBuild
+        | Dotnet
+    with 
+        member x.GetBuildCommand (projectPath: string) (configuration: string) (customArg: string) =
+            match x with
+            | MSBuild -> "msbuild", ""
+            | Dotnet -> "dotnet",  $"build {projectPath} {customArg} -c {configuration}"
+        member x.GetRebuildCommand (projectPath: string) (configuration: string) (customArg: string) =
+            match x with
+            | MSBuild -> "msbuild", ""
+            | Dotnet -> "dotnet", $"build {projectPath} {customArg} -c {configuration} --no-incremental"
+        member x.GetPublishCommand (projectPath: string) (configuration: string) (customArg: string) (publishDirectory: string) = 
+            match x with
+            | MSBuild -> "msbuild", ""
+            | Dotnet -> "dotnet", $"publish {projectPath} {customArg} -c {configuration} --output {publishDirectory}"
+
     type Project = {
         Name : string
         OutputPath : string
         ProjectFilePath : string
         Framework : string array
         CustomCommand : Action.ProjectAct option
+        BuildCommand : BuildTools
     }
     with 
         member x.Run(framework: string option) =
@@ -29,6 +47,33 @@ module SolutionsInstance =
                     | _ ->
                         Path.Combine(x.OutputPath)
                 ExecuteStreamOutput outputPath (Path.Combine(outputPath, (x.Name+".exe"))) "" None
+        member x.Build (framework: string option) (output) =
+            let arg = 
+                match framework with
+                | Some framework when Array.contains framework x.Framework ->
+                    $"--framework {framework}"
+                | _ -> 
+                    ""
+            let cmd, args = (x.BuildCommand.GetBuildCommand (x.ProjectFilePath) ("Debug") (arg))
+            Execute x.ProjectFilePath cmd args output
+        member x.Rebuild (framework: string option) (output) =
+            let arg = 
+                match framework with
+                | Some framework when Array.contains framework x.Framework ->
+                    $"--framework {framework}"
+                | _ -> 
+                    ""
+            let cmd, args = (x.BuildCommand.GetRebuildCommand (x.ProjectFilePath) ("Debug") (arg))
+            Execute x.ProjectFilePath cmd args output
+        member x.Publish (framework: string option) (outputDirectory: string) (output) =
+            let arg = 
+                match framework with
+                | Some framework when Array.contains framework x.Framework ->
+                    $"--framework {framework}"
+                | _ -> 
+                    ""
+            let cmd, args = (x.BuildCommand.GetPublishCommand (x.ProjectFilePath) ("Publish") (arg) (outputDirectory))
+            Execute x.ProjectFilePath cmd args output
         override x.ToString() =
             sprintf "\n\t\tName: %s\n\t\tPath: %s\n" x.Name x.OutputPath
         static member Default =
@@ -38,6 +83,7 @@ module SolutionsInstance =
                 ProjectFilePath = ""
                 Framework = Array.empty
                 CustomCommand = None
+                BuildCommand = Dotnet
             }
         static member Create (filename: string) (command: ProjectAct option) =
             try 
@@ -77,6 +123,10 @@ module SolutionsInstance =
                         ProjectFilePath = filename
                         Framework = targetFramework
                         CustomCommand = command
+                        BuildCommand =
+                            match Path.GetExtension(filename) with
+                            | "vcxproj" -> MSBuild
+                            | _ -> Dotnet
                     }
                     |> Some
                 else None
@@ -132,10 +182,10 @@ module SolutionsInstance =
                 | Some command when command.BuildCmd.IsSome ->
                     command.BuildCmd.Value.Execute None
                 | _ ->
-                    match (framework, x.RunningProject) with
-                    | (Some framework, Some project) when Array.contains framework x.GetFramework ->
+                    match x.RunningProject with
+                    | Some project ->
                         //sprintf "--framework %s " framework
-                        Execute x.Path "dotnet" (sprintf "build %s --framework %s -c Debug" project.ProjectFilePath framework) output
+                        project.Build framework output
                     | _ ->
                         Execute x.Path "dotnet" (sprintf "build %s.sln -c Debug" x.Name) output
             )
@@ -145,10 +195,10 @@ module SolutionsInstance =
                 | Some command when command.RebuildCmd.IsSome ->
                     command.RebuildCmd.Value.Execute None
                 | _ ->
-                    match (framework, x.RunningProject) with
-                    | (Some framework, Some project) when Array.contains framework x.GetFramework ->
+                    match (x.RunningProject) with
+                    | Some project ->
                         //sprintf "--framework %s " framework
-                        Execute x.Path "dotnet" (sprintf "build %s --framework %s -c Debug --no-incremental" project.ProjectFilePath framework) output
+                        project.Rebuild framework output
                     | _ ->
                         Execute x.Path "dotnet" (sprintf "build %s.sln -c Debug --no-incremental" x.Name) output
             )
@@ -180,9 +230,9 @@ module SolutionsInstance =
                         match framework with
                         | Some framework -> Path.Combine(x.PublishDir, framework)
                         | None -> x.PublishDir
-                    match (framework, x.RunningProject) with
-                    | (Some framework, Some project) when Array.contains framework x.GetFramework ->
-                        Execute x.Path "dotnet" (sprintf "publish %s --framework %s -c publish  --output %s" project.ProjectFilePath framework publishDir) output
+                    match x.RunningProject with
+                    | Some project ->
+                        project.Publish framework publishDir output
                     | _ ->
                         Execute x.Path "dotnet" (sprintf "publish %s.sln -c publish  --output %s" x.Name publishDir) output
                     directoryUri(publishDir) |> ignore
