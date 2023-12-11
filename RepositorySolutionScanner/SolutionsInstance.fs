@@ -13,6 +13,18 @@ module SolutionsInstance =
         | MSBuild
         | Dotnet
     with 
+        member x.CanBuild = 
+            match x with
+            | MSBuild -> true
+            | Dotnet -> true
+        member x.CanRebuild = 
+            match x with
+            | MSBuild -> true
+            | Dotnet -> true
+        member x.CanPublish = 
+            match x with
+            | MSBuild -> false
+            | Dotnet -> true
         member x.GetBuildCommand (projectPath: string) (configuration: string) (customArg: string) =
             match x with
             | MSBuild -> "msbuild.exe", $"/p:Configuration={configuration} {projectPath}"
@@ -165,9 +177,15 @@ module SolutionsInstance =
     }
     with 
         member x.CanOpen = true
-        member x.CanBuild = true
+        member x.CanBuild = 
+            match  x.RunningProject with
+            | Some project -> project.BuildCommand.CanBuild
+            | None -> true
         member x.CanRun = x.RunningProject.IsSome
-        member x.CanPublish = true
+        member x.CanPublish = 
+            match  x.RunningProject with
+            | Some project -> project.BuildCommand.CanPublish
+            | None -> true
         member x.GetFilePath = (Path.Combine(x.Path,(sprintf "%s.sln" x.Name)))
         member x.GetFramework = 
             match x.RunningProject with
