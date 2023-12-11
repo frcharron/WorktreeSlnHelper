@@ -15,15 +15,15 @@ module SolutionsInstance =
     with 
         member x.GetBuildCommand (projectPath: string) (configuration: string) (customArg: string) =
             match x with
-            | MSBuild -> "msbuild", ""
+            | MSBuild -> "msbuild.exe", $"/p:Configuration={configuration} {projectPath}"
             | Dotnet -> "dotnet",  $"build {projectPath} {customArg} -c {configuration}"
         member x.GetRebuildCommand (projectPath: string) (configuration: string) (customArg: string) =
             match x with
-            | MSBuild -> "msbuild", ""
+            | MSBuild -> "msbuild.exe", $"/p:Configuration={configuration} {projectPath} -t:rebuild"
             | Dotnet -> "dotnet", $"build {projectPath} {customArg} -c {configuration} --no-incremental"
         member x.GetPublishCommand (projectPath: string) (configuration: string) (customArg: string) (publishDirectory: string) = 
             match x with
-            | MSBuild -> "msbuild", ""
+            | MSBuild -> "msbuild.exe", ""
             | Dotnet -> "dotnet", $"publish {projectPath} {customArg} -c {configuration} --output {publishDirectory}"
 
     type Project = {
